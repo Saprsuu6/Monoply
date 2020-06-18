@@ -6,8 +6,8 @@ int main() {
 	STREET street{};
 	PLAYER player{};
 	Setings(h);
-	PayersArr(count_players);
 	ChoosePlayers(h, count_players);
+	PayersArr(count_players);
 	system("cls");
 	GameField();
 	system("pause > NULL");
