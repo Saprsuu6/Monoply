@@ -32,10 +32,12 @@ struct RENT {
 	int railway[size - 2] = { 25, 50, 100, 200 };
 };
 
-void ChoosePlayers(HANDLE& h, int& count_all);
+void ChoosePlayers(HANDLE h, int& count_all);
 void Getch(int& count, bool& temp, int& count_players);
 void PrintCount(COORD& c, HANDLE& h, int& count, const char* word);
-void Setings(HANDLE& h);
+void Setings(HANDLE h);
 void CountOfPlayers(int& count, int& count_all);
-void PayersArr(int& count_players);
+void PayersArr(int count_players);
 void GameField();
+void ArrOfTheProperty();
+STREET CreateStreet(int colour, int price, int rent[], const char* call, const char* master);
