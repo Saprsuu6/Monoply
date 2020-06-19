@@ -72,9 +72,12 @@ void GameField() {
 	int hight = 20;
 	for (int i = 0; i < hight; i++) {
 		for (int j = 0; j < width; j++) {
-			if (i == 0 || j == 0 || i == hight - 1 || j == width - 1 || j == width / 2 ||
-				(i == hight - 3 || i == 2) && j > 2 && j < width - 27)
+			if (i == 0 || j == 0 || i == hight - 1 || j == width - 1 || j == width / 2)
 				cout << char(219);
+			else if ((i == hight - 6 || i == 2) && j > 2 && j < width - 27) 
+				cout << char(196);
+			else if ((j == width - 28 || j == 3) && i > 2 && i < hight - 5)
+				cout << char(179);
 			else
 				cout << " ";
 		}
@@ -107,6 +110,27 @@ STREET CreateStreet(int colour, int price, int rent[], const char* call, const c
 	return street;
 }
 
-void Stones(HANDLE h) {
+void Stone(HANDLE h, int x, int y) {
+	int random = rand() % 6 + 1;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 1; j < 7; j++) {
+			PrintStone(h, j, x, y);
+			if (i == 4 && j == random) {
+				PrintStone(h, j, x, y);
+				break;
+			}
+			Sleep(30);
+		}
+	}
+}
 
+void PrintStone(HANDLE& h, int num, int x, int y) {
+	COORD c{ x,y };
+	SetConsoleCursorPosition(h, c);
+	cout << num;
+}
+
+void GameEngine(HANDLE& h) {
+	Stone(h, 10, 15); // first stone
+	Stone(h, 11, 15); // seconsd stone
 }

@@ -41,3 +41,6 @@ void PayersArr(int count_players);
 void GameField();
 void ArrOfTheProperty();
 STREET CreateStreet(int colour, int price, int rent[], const char* call, const char* master);
+void Stone(HANDLE h, int x, int y);
+void PrintStone(HANDLE& h, int num, int x, int y);
+void GameEngine(HANDLE& h);
