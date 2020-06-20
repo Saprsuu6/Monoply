@@ -74,9 +74,9 @@ void GameField() {
 		for (int j = 0; j < width; j++) {
 			if (i == 0 || j == 0 || i == hight - 1 || j == width - 1 || j == width / 2)
 				cout << char(219);
-			else if ((i == hight - 6 || i == 2) && j > 2 && j < width - 27) 
+			else if (((i == hight - 6 || i == 2) || (i == hight - 5 || i == hight - 3)) && j > 2 && j < width - 27)
 				cout << char(196);
-			else if ((j == width - 28 || j == 3) && i > 2 && i < hight - 5)
+			else if ((j == width - 28 || j == 3) && (i > 2 && i < hight - 5 || i > hight - 5 && i < hight - 3))
 				cout << char(179);
 			else
 				cout << " ";
@@ -127,10 +127,11 @@ void Stone(HANDLE h, int x, int y) {
 void PrintStone(HANDLE& h, int num, int x, int y) {
 	COORD c{ x,y };
 	SetConsoleCursorPosition(h, c);
+	SetConsoleTextAttribute(h, 4);
 	cout << num;
 }
 
 void GameEngine(HANDLE& h) {
-	Stone(h, 10, 15); // first stone
-	Stone(h, 11, 15); // seconsd stone
+	Stone(h, 5, 16); // first stone
+	Stone(h, 12, 16); // seconsd stone
 }
