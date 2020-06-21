@@ -74,9 +74,9 @@ void GameField() {
 		for (int j = 0; j < width; j++) {
 			if (i == 0 || j == 0 || i == hight - 1 || j == width - 1 || j == width / 2)
 				cout << char(219);
-			else if ((i == hight - 5 || i == 2) && j > 2 && j < width - 27)
+			else if ((i == hight - 5 || i == 2) && j > 1 && j < width - 26)
 				cout << char(196);
-			else if ((j == width - 28 || j == 3) && i > 2 && i < hight - 5)
+			else if ((j == width - 27 || j == 2) && i > 2 && i < hight - 5)
 				cout << char(179);
 			else
 				cout << " ";
@@ -132,29 +132,34 @@ void PrintStone(HANDLE& h, int num, int x, int y) {
 	cout << num;
 }
 
-void ShowProperty(int colour, int price, int rent[], const char* call, const char* master) {
-	
+void ShowProperty(HANDLE& h, int colour, int price, int ar_rent[], const char* call, const char* master) {
+	RENT rent;
+	COORD c{ 3,3 };
+	SetConsoleCursorPosition(h, c);
+	SetConsoleTextAttribute(h, colour);
+	cout << call;
+	c.X = 3, c.Y++;
+	SetConsoleCursorPosition(h, c);
+	SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
+	cout << price;
+	c.X = 3, c.Y++;
+	for (int i = 1; i < 6; i++) {
+		SetConsoleCursorPosition(h, c);
+		if (i == 5) {
+			cout << "HOTEL - " << ar_rent[i] << "$";
+			break;
+		}
+		cout << i << " house - " << ar_rent[i] << "$";
+		c.X = 3, c.Y++;
+	}
+	c.X = 3, c.Y += 2;
+	cout << master;
 }
 
 void GameEngine(HANDLE& h) {
+	RENT rent;
 	int result = 0;
 	Stone(h, 11, 17, result); // first stone
 	Stone(h, 13, 17, result); // seconsd stone
-	COORD c{ 4,3 };
-	for (int i = 0; i < 12; i++) {
-		SetConsoleCursorPosition(h, c);
-		for (int j = 0; j < 18; j++) {
-			if (i == 0 || j == 0 || i == 11 || j == 17) {
-				SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
-				cout << char(219);
-			}
-			else if (i == 1 || j == 1 || i == 4 || j == 16) {
-				SetConsoleTextAttribute(h, (int)COLOURS::BROWN);
-				cout << char(219);
-			}
-			else
-				cout << " ";
-		}
-		c.Y++;
-	}
+	ShowProperty(h, (int)COLOURS::BROWN, rent.brown)
 }

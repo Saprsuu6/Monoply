@@ -10,7 +10,7 @@ int main() {
 	PayersArr(count_players);
 	system("cls");
 	GameField();
-	Sleep(500);
+	Sleep(300);
 	GameEngine(h);
 	system("pause > NULL");
 }

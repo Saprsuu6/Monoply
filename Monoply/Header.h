@@ -44,4 +44,4 @@ STREET CreateStreet(int colour, int price, int rent[], const char* call, const c
 void Stone(HANDLE h, int x, int y, int& result);
 void PrintStone(HANDLE& h, int num, int x, int y);
 void GameEngine(HANDLE& h);
-void ShowProperty(int colour, int price, int rent[], const char* call, const char* master);
+void ShowProperty(HANDLE& h, int colour, int price, int rent[], const char* call, const char* master);
