@@ -4,7 +4,7 @@
 #include<conio.h>
 using namespace std;
 
-enum class COLOURS { BROWN = 12, CYAN = 11, PINK = 13, ORANGE = 6, RED = 4, YELLOW = 14, GREEN = 10, BLUE = 9 };
+enum class COLOURS { WHITE = 15, BROWN = 12, CYAN = 11, PINK = 13, ORANGE = 6, RED = 4, YELLOW = 14, GREEN = 10, BLUE = 9 };
 
 struct STREET {
 	int colour;
@@ -41,6 +41,7 @@ void PayersArr(int count_players);
 void GameField();
 void ArrOfTheProperty();
 STREET CreateStreet(int colour, int price, int rent[], const char* call, const char* master);
-void Stone(HANDLE h, int x, int y);
+void Stone(HANDLE h, int x, int y, int& result);
 void PrintStone(HANDLE& h, int num, int x, int y);
 void GameEngine(HANDLE& h);
+void ShowProperty(int colour, int price, int rent[], const char* call, const char* master);
