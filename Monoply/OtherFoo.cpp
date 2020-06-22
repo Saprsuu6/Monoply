@@ -61,13 +61,14 @@ void ChoosePlayers(HANDLE h, int& count_players) {
 	return;
 }
 
-void PayersArr(int count_players) {
+PLAYER* PayersArr(int count_players) {
 	int first_money = 1500;
 	PLAYER* player_arr = new PLAYER[count_players];
 	for (int i = 0; i < count_players; i++) {
 		player_arr->money = first_money;
 		player_arr->prison = false;
 	}
+	return player_arr;
 }
 
 void GameField() {
@@ -194,22 +195,22 @@ void ClearField(HANDLE h) {
 	}
 }
 
-//void Choose() {
-//	COORD mouse;
-//	HANDLE h_m = GetStdHandle(STD_INPUT_HANDLE);
-//	SetConsoleMode(h_m, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
-//	const int events = 256;
-//	INPUT_RECORD all_events[events];
-//	DWORD read_events;
-//	while (true) {
-//		ReadConsoleInput(h_m, all_events, events, &read_events);
-//		for (int i = 0; i < read_events; i++) {
-//			mouse.X = all_events[i].Event.MouseEvent.dwMousePosition.X;
-//			mouse.Y = all_events[i].Event.MouseEvent.dwMousePosition.Y;
-//
-//		}
-//	}
-//}
+void Choose() {
+	COORD mouse;
+	HANDLE h_m = GetStdHandle(STD_INPUT_HANDLE);
+	SetConsoleMode(h_m, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
+	const int events = 256;
+	INPUT_RECORD all_events[events];
+	DWORD read_events;
+	while (true) {
+		ReadConsoleInput(h_m, all_events, events, &read_events);
+		for (int i = 0; i < read_events; i++) {
+			mouse.X = all_events[i].Event.MouseEvent.dwMousePosition.X;
+			mouse.Y = all_events[i].Event.MouseEvent.dwMousePosition.Y;
+
+		}
+	}
+}
 
 void PrintBar(COORD& c, HANDLE h, int i) {
 	SetConsoleCursorPosition(h, c);
@@ -218,12 +219,16 @@ void PrintBar(COORD& c, HANDLE h, int i) {
 }
 
 void GameEngine(HANDLE h, STREET& street, int count_players) {
+	int salary = 20;
 	STREET* street_arr = new STREET[12];
     street_arr = ArrOfTheProperty(street);
+	PLAYER* player_arr = new PLAYER[count_players];
+	player_arr = PayersArr(count_players);
+	PayersArr(count_players);
 	int result = 0;
 	COORD c{ 28,2 };
 	while (true) {
-		for (int i = 0; i < count_players; i++) { 
+		for (int i = 0; i < count_players; i++) {
 			PrintBar(c, h, i);
 			Stone(h, 11, 17, result); // first stone
 			Stone(h, 13, 17, result); // seconsd stone
@@ -269,6 +274,7 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 			result = 0;
 			_getch();
 			ClearField(h);
+			player_arr[i].money += salary;
 		}
 	}
 }

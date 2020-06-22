@@ -38,7 +38,7 @@ void Getch(int& count, bool& temp, int& count_players);
 void PrintCount(COORD& c, HANDLE& h, int& count, const char* word);
 void Setings(HANDLE h);
 void CountOfPlayers(int& count, int& count_all);
-void PayersArr(int count_players);
+PLAYER* PayersArr(int count_players);
 void GameField();
 STREET* ArrOfTheProperty(STREET& street);
 STREET CreateStreet(STREET& street, int colour, int price, int rent[], const char* call, const char* master);

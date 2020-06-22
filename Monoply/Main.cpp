@@ -7,7 +7,6 @@ int main() {
 	PLAYER player{};
 	Setings(h);
 	ChoosePlayers(h, count_players);
-	PayersArr(count_players);
 	system("cls");
 	GameField();
 	Sleep(300);
