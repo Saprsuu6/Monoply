@@ -65,8 +65,8 @@ PLAYER* PayersArr(int count_players) {
 	int first_money = 1500;
 	PLAYER* player_arr = new PLAYER[count_players];
 	for (int i = 0; i < count_players; i++) {
-		player_arr->money = first_money;
-		player_arr->prison = false;
+		player_arr[i].money = first_money;
+		player_arr[i].prison = false;
 	}
 	return player_arr;
 }
@@ -93,22 +93,22 @@ STREET* ArrOfTheProperty(STREET& street) {
 	RENT rent;
 	int all_street = 12;
 	STREET* street_arr = new STREET[all_street];
-	street_arr[0] = CreateStreet(street, (int)COLOURS::BROWN, 60, rent.brown, "Los Venturos Mafia", "Anyone has");
-	street_arr[1] = CreateStreet(street, (int)COLOURS::CYAN, 120, rent.cyan, "Varrios Los Aztecas", "Anyone has");
-	street_arr[2] = CreateStreet(street, (int)COLOURS::PINK, 160, rent.pink, "Ballas", "Anyone has");
-	street_arr[3] = CreateStreet(street, (int)COLOURS::ORANGE, 200, rent.orange, "Da Nang Boys", "Anyone has");
-	street_arr[4] = CreateStreet(street, (int)COLOURS::RED, 240, rent.red, "San Fierro Triads", "Anyone has");
-	street_arr[5] = CreateStreet(street, (int)COLOURS::YELLOW, 280, rent.yellow, "Los Santos Vagos", "Anyone has");
-	street_arr[6] = CreateStreet(street, (int)COLOURS::GREEN, 320, rent.green, "Grove Street Familes", "Anyone has");
-	street_arr[7] = CreateStreet(street, (int)COLOURS::BLUE, 400, rent.blue, "San Fierro Rifa", "Anyone has");
-	street_arr[8] = CreateStreet(street, (int)COLOURS::WHITE, 200, rent.railway, "1# Railway st.", "Anyone has");
-	street_arr[9] = CreateStreet(street, (int)COLOURS::WHITE, 200, rent.railway, "2# Railway st.", "Anyone has");
-	street_arr[10] = CreateStreet(street, (int)COLOURS::WHITE, 200, rent.railway, "3# Railway st.", "Anyone has");
-	street_arr[11] = CreateStreet(street, (int)COLOURS::WHITE, 200, rent.railway, "4# Railway st.", "Anyone has");
+	street_arr[0] = CreateStreet(street, (int)COLOURS::BROWN, 60, rent.brown, "Los Venturos Mafia", "Anyone has", 0);
+	street_arr[1] = CreateStreet(street, (int)COLOURS::CYAN, 120, rent.cyan, "Varrios Los Aztecas", "Anyone has", 0);
+	street_arr[2] = CreateStreet(street, (int)COLOURS::PINK, 160, rent.pink, "Ballas", "Anyone has", 0);
+	street_arr[3] = CreateStreet(street, (int)COLOURS::ORANGE, 200, rent.orange, "Da Nang Boys", "Anyone has", 0);
+	street_arr[4] = CreateStreet(street, (int)COLOURS::RED, 240, rent.red, "San Fierro Triads", "Anyone has", 0);
+	street_arr[5] = CreateStreet(street, (int)COLOURS::YELLOW, 280, rent.yellow, "Los Santos Vagos", "Anyone has", 0);
+	street_arr[6] = CreateStreet(street, (int)COLOURS::GREEN, 320, rent.green, "Grove Street Familes", "Anyone has", 0);
+	street_arr[7] = CreateStreet(street, (int)COLOURS::BLUE, 400, rent.blue, "San Fierro Rifa", "Anyone has", 0);
+	street_arr[8] = CreateStreet(street, (int)COLOURS::WHITE, 200, rent.railway, "1# Railway st.", "Anyone has", 0);
+	street_arr[9] = CreateStreet(street, (int)COLOURS::WHITE, 200, rent.railway, "2# Railway st.", "Anyone has", 0);
+	street_arr[10] = CreateStreet(street, (int)COLOURS::WHITE, 200, rent.railway, "3# Railway st.", "Anyone has", 0);
+	street_arr[11] = CreateStreet(street, (int)COLOURS::WHITE, 200, rent.railway, "4# Railway st.", "Anyone has", 0);
 	return street_arr;
 }
 
-STREET CreateStreet(STREET& street, int colour, int price, int rent[], const char* call, const char* master) {
+STREET CreateStreet(STREET& street, int colour, int price, int rent[], const char* call, const char* master, int property) {
 	if (colour == (int)COLOURS::WHITE) {
 		street.rent = new int[4];
 		for (int i = 0; i < 4; i++)
@@ -119,6 +119,7 @@ STREET CreateStreet(STREET& street, int colour, int price, int rent[], const cha
 		for (int i = 0; i < 6; i++)
 			street.rent[i] = rent[i];
 	}
+	street.property = 0;
 	street.call = new char[50];
 	street.master = new char[50];
 	street.colour = colour;
@@ -151,7 +152,7 @@ void PrintStone(HANDLE h, int num, int x, int y) {
 	cout << num;
 }
 
-void ShowProperty(HANDLE h, int colour, int price, int ar_rent[], const char* call, const char* master) {
+void ShowProperty(HANDLE h, int colour, int price, int ar_rent[], const char* call, const char* master, int property) {
 	COORD c{ 3,3 };
 	SetConsoleCursorPosition(h, c);
 	SetConsoleTextAttribute(h, colour);
@@ -180,7 +181,11 @@ void ShowProperty(HANDLE h, int colour, int price, int ar_rent[], const char* ca
 			c.X = 3, c.Y++;
 		}
 	}
-	c.X = 3, c.Y++;
+	SetConsoleTextAttribute(h, colour);
+	SetConsoleCursorPosition(h, c);
+	cout << "Property - " << property;
+	c.X = 3, c.Y += 2;
+	SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
 	SetConsoleCursorPosition(h, c);
 	cout << master;
 }
@@ -191,11 +196,64 @@ void ClearField(HANDLE h) {
 		SetConsoleCursorPosition(h, c);
 		for (int j = 0; j < 20; j++) 
 			cout << " ";
-		c.X =3, c.Y++;
+		c.X = 3, c.Y++;
 	}
 }
 
-void Choose() {
+void PrintPlayer(COORD& c, HANDLE h, PLAYER*& player_arr, int i) {
+	SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
+	SetConsoleCursorPosition(h, c);
+	cout << "Player #" << i + 1;
+	c.X = 28, c.Y += 2;
+	SetConsoleCursorPosition(h, c);
+	cout << "Money - " << player_arr[i].money << "$";
+	c.X = 28, c.Y++;
+	SetConsoleCursorPosition(h, c);
+	if (player_arr[i].prison == false) 
+		cout << "Not in prison";
+	else
+		cout << "In prison";
+	c.X = 28, c.Y = 2;
+}
+
+void PrintBar(COORD& c, HANDLE h, int i, int temp, STREET*& street_arr) {
+	c.Y += 5;
+	SetConsoleCursorPosition(h, c);
+	if (_strcmpi(street_arr[temp].master, "Anyone has") == 0)
+		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
+	else
+		SetConsoleTextAttribute(h, 1);
+	cout << "Buy";
+	c.X = 28, c.Y++;
+	SetConsoleCursorPosition(h, c);
+	if (_strcmpi(street_arr[temp].master, "Anyone has") == 0)
+		SetConsoleTextAttribute(h, 1);
+	else
+		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
+	cout << "Lay";
+	c.X = 28, c.Y++;
+	SetConsoleCursorPosition(h, c);
+	if (street_arr[temp].property > 0 && 
+		(_strcmpi(street_arr[temp].call, "1# Railway st.") != 0 ||
+		_strcmpi(street_arr[temp].call, "2# Railway st.") != 0 || 
+		_strcmpi(street_arr[temp].call, "3# Railway st.") != 0 || 
+		_strcmpi(street_arr[temp].call, "4# Railway st.") != 0))
+		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
+	else
+		SetConsoleTextAttribute(h, 1);
+	cout << "Lay house";
+	c.X = 28, c.Y++;
+	SetConsoleCursorPosition(h, c);
+	cout << "Build a house";
+	c.X = 28, c.Y = 2;
+}
+
+void Salary(PLAYER*& player_arr, int i, int salary) {
+	player_arr[i].money += salary;
+}
+
+void Choose(int& code, int i, int temp, STREET*& street_arr) {
+	char* str{};
 	COORD mouse;
 	HANDLE h_m = GetStdHandle(STD_INPUT_HANDLE);
 	SetConsoleMode(h_m, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
@@ -207,19 +265,22 @@ void Choose() {
 		for (int i = 0; i < read_events; i++) {
 			mouse.X = all_events[i].Event.MouseEvent.dwMousePosition.X;
 			mouse.Y = all_events[i].Event.MouseEvent.dwMousePosition.Y;
-
+			if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 7) {
+				if (_strcmpi(street_arr[temp].master, "Anyone has") == 0) {
+					strcpy_s(street_arr[temp].master, 49, "Player #");
+					/*_itoa_s(i, str, 5, 10);
+					strcat_s(street_arr[temp].master, 5, str);*/
+				}
+			}
+			//cout << mouse.X << mouse.Y;
 		}
 	}
 }
 
-void PrintBar(COORD& c, HANDLE h, int i) {
-	SetConsoleCursorPosition(h, c);
-	SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
-	cout << "Player #" << i + 1;
-}
-
 void GameEngine(HANDLE h, STREET& street, int count_players) {
+	int temp;
 	int salary = 20;
+	int code;
 	STREET* street_arr = new STREET[12];
     street_arr = ArrOfTheProperty(street);
 	PLAYER* player_arr = new PLAYER[count_players];
@@ -229,52 +290,65 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 	COORD c{ 28,2 };
 	while (true) {
 		for (int i = 0; i < count_players; i++) {
-			PrintBar(c, h, i);
+			PrintPlayer(c, h, player_arr, i);
 			Stone(h, 11, 17, result); // first stone
 			Stone(h, 13, 17, result); // seconsd stone
 			Sleep(200);
 			switch (result) {
 			case(1):
-				ShowProperty(h, street_arr[0].colour, street_arr[0].price, street_arr[0].rent, street_arr[0].call, street_arr[0].master);
-				break;
+				temp = 0;
+				ShowProperty(h, street_arr[0].colour, street_arr[0].price, street_arr[0].rent, street_arr[0].call, street_arr[0].master, street_arr[0].property);
+				break;																												   
 			case(2):
-				ShowProperty(h, street_arr[1].colour, street_arr[1].price, street_arr[1].rent, street_arr[1].call, street_arr[1].master);
-				break;
+				temp = 1;
+				ShowProperty(h, street_arr[1].colour, street_arr[1].price, street_arr[1].rent, street_arr[1].call, street_arr[1].master, street_arr[1].property);
+				break;																												   
 			case(3):
-				ShowProperty(h, street_arr[2].colour, street_arr[2].price, street_arr[2].rent, street_arr[2].call, street_arr[2].master);
-				break;
-			case(4):
-				ShowProperty(h, street_arr[3].colour, street_arr[3].price, street_arr[3].rent, street_arr[3].call, street_arr[3].master);
-				break;
-			case(5):
-				ShowProperty(h, street_arr[4].colour, street_arr[4].price, street_arr[4].rent, street_arr[4].call, street_arr[4].master);
-				break;
-			case(6):
-				ShowProperty(h, street_arr[5].colour, street_arr[5].price, street_arr[5].rent, street_arr[5].call, street_arr[5].master);
-				break;
-			case(7):
-				ShowProperty(h, street_arr[6].colour, street_arr[6].price, street_arr[6].rent, street_arr[6].call, street_arr[6].master);
-				break;
-			case(8):
-				ShowProperty(h, street_arr[7].colour, street_arr[7].price, street_arr[7].rent, street_arr[7].call, street_arr[7].master);
-				break;
-			case(9):
-				ShowProperty(h, street_arr[8].colour, street_arr[8].price, street_arr[8].rent, street_arr[8].call, street_arr[8].master);
-				break;
-			case(10):
-				ShowProperty(h, street_arr[9].colour, street_arr[9].price, street_arr[9].rent, street_arr[9].call, street_arr[9].master);
+				temp = 2;
+				ShowProperty(h, street_arr[2].colour, street_arr[2].price, street_arr[2].rent, street_arr[2].call, street_arr[2].master, street_arr[2].property);
+				break;																												   
+			case(4):	
+				temp = 3;
+				ShowProperty(h, street_arr[3].colour, street_arr[3].price, street_arr[3].rent, street_arr[3].call, street_arr[3].master, street_arr[3].property);
+				break;																												   
+			case(5):	
+				temp = 4;
+				ShowProperty(h, street_arr[4].colour, street_arr[4].price, street_arr[4].rent, street_arr[4].call, street_arr[4].master, street_arr[4].property);
+				break;																												   
+			case(6):	
+				temp = 5;
+				ShowProperty(h, street_arr[5].colour, street_arr[5].price, street_arr[5].rent, street_arr[5].call, street_arr[5].master, street_arr[5].property);
+				break;																												   
+			case(7):	
+				temp = 6;
+				ShowProperty(h, street_arr[6].colour, street_arr[6].price, street_arr[6].rent, street_arr[6].call, street_arr[6].master, street_arr[6].property);
+				break;																												   
+			case(8):	
+				temp = 7;
+				ShowProperty(h, street_arr[7].colour, street_arr[7].price, street_arr[7].rent, street_arr[7].call, street_arr[7].master, street_arr[7].property);
+				break;																												   
+			case(9):	
+				temp = 8;
+				ShowProperty(h, street_arr[8].colour, street_arr[8].price, street_arr[8].rent, street_arr[8].call, street_arr[8].master, street_arr[8].property);
+				break;																												   
+			case(10):	
+				temp = 9;
+				ShowProperty(h, street_arr[9].colour, street_arr[9].price, street_arr[9].rent, street_arr[9].call, street_arr[9].master, street_arr[9].property);
 				break;
 			case(11):
-				ShowProperty(h, street_arr[10].colour, street_arr[10].price, street_arr[10].rent, street_arr[10].call, street_arr[10].master);
+				temp = 10;
+				ShowProperty(h, street_arr[10].colour, street_arr[10].price, street_arr[10].rent, street_arr[10].call, street_arr[10].master, street_arr[10].property);
 				break;
 			case(12):
-				ShowProperty(h, street_arr[11].colour, street_arr[11].price, street_arr[11].rent, street_arr[11].call, street_arr[11].master);
+				temp = 11;
+				ShowProperty(h, street_arr[11].colour, street_arr[11].price, street_arr[11].rent, street_arr[11].call, street_arr[11].master, street_arr[11].property);
 				break;
 			}
+			PrintBar(c, h, i, temp, street_arr);
 			result = 0;
-			_getch();
+			Choose(code, i, temp, street_arr);
 			ClearField(h);
-			player_arr[i].money += salary;
+			Salary(player_arr, i, 20);
 		}
 	}
 }

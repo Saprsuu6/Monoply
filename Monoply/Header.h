@@ -7,6 +7,7 @@ using namespace std;
 enum class COLOURS { WHITE = 15, BROWN = 12, CYAN = 11, PINK = 13, ORANGE = 6, RED = 4, YELLOW = 14, GREEN = 10, BLUE = 9 };
 
 struct STREET {
+	int property;
 	int colour;
 	int price;
 	int* rent = nullptr;
@@ -41,10 +42,13 @@ void CountOfPlayers(int& count, int& count_all);
 PLAYER* PayersArr(int count_players);
 void GameField();
 STREET* ArrOfTheProperty(STREET& street);
-STREET CreateStreet(STREET& street, int colour, int price, int rent[], const char* call, const char* master);
+STREET CreateStreet(STREET& street, int colour, int price, int rent[], const char* call, const char* master, int property);
 void Stone(HANDLE h, int x, int y, int& result);
 void PrintStone(HANDLE h, int num, int x, int y);
 void GameEngine(HANDLE h, STREET& street, int count_players);
-void ShowProperty(HANDLE h, int colour, int price, int rent[], const char* call, const char* master);
+void ShowProperty(HANDLE h, int colour, int price, int ar_rent[], const char* call, const char* master, int property);
 void ClearField(HANDLE h);
-void PrintBar(COORD& c, HANDLE h, int i);
+void PrintBar(COORD& c, HANDLE h, int i, int temp, STREET*& street_arr);
+void Salary(PLAYER*& player_arr, int i, int salary);
+void PrintPlayer(COORD& c, HANDLE h, PLAYER*& player_arr, int i);
+void Choose(int& code, int i, int temp, STREET*& street_arr);
