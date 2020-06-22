@@ -11,6 +11,6 @@ int main() {
 	system("cls");
 	GameField();
 	Sleep(300);
-	GameEngine(h);
+	GameEngine(h, street, count_players);
 	system("pause > NULL");
 }

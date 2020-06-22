@@ -9,9 +9,9 @@ enum class COLOURS { WHITE = 15, BROWN = 12, CYAN = 11, PINK = 13, ORANGE = 6, R
 struct STREET {
 	int colour;
 	int price;
-	int* rent;
-	char* call;
-	char* master;
+	int* rent = nullptr;
+	char* call = nullptr;
+	char* master = nullptr;
 };
 
 struct PLAYER {
@@ -32,6 +32,7 @@ struct RENT {
 	int railway[size - 2] = { 25, 50, 100, 200 };
 };
 
+int main();
 void ChoosePlayers(HANDLE h, int& count_all);
 void Getch(int& count, bool& temp, int& count_players);
 void PrintCount(COORD& c, HANDLE& h, int& count, const char* word);
@@ -39,9 +40,11 @@ void Setings(HANDLE h);
 void CountOfPlayers(int& count, int& count_all);
 void PayersArr(int count_players);
 void GameField();
-void ArrOfTheProperty();
-STREET CreateStreet(int colour, int price, int rent[], const char* call, const char* master);
+STREET* ArrOfTheProperty(STREET& street);
+STREET CreateStreet(STREET& street, int colour, int price, int rent[], const char* call, const char* master);
 void Stone(HANDLE h, int x, int y, int& result);
-void PrintStone(HANDLE& h, int num, int x, int y);
-void GameEngine(HANDLE& h);
-void ShowProperty(HANDLE& h, int colour, int price, int rent[], const char* call, const char* master);
+void PrintStone(HANDLE h, int num, int x, int y);
+void GameEngine(HANDLE h, STREET& street, int count_players);
+void ShowProperty(HANDLE h, int colour, int price, int rent[], const char* call, const char* master);
+void ClearField(HANDLE h);
+void PrintBar(COORD& c, HANDLE h, int i);
