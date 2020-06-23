@@ -324,8 +324,8 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 						break;
 					}
 				}
-				/*OtherVatiant(c, h, code);*/
-				code = _getch();
+				OtherVatiant(c, h, code);
+				ClearText(c, h);
 				if (code == 224 || code == 0)
 					code = _getch();
 				if (code == 13)
@@ -338,7 +338,7 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 }
 
 void OtherVatiant(COORD& c, HANDLE h, int& code) {
-	c.X = 28, c.Y += 13;
+	c.X = 28, c.Y = 15;
 	SetConsoleCursorPosition(h, c);
 	SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
 	cout << "Press ENTER for next";
@@ -353,6 +353,10 @@ void UCanBuy(COORD& c, HANDLE h) {
 	SetConsoleCursorPosition(h, c);
 	cout << "You can buy!";
 	Sleep(1000);
+	ClearText(c, h);
+}
+
+void ClearText(COORD& c, HANDLE h) {
 	c.X = 28, c.Y -= 2;
 	for (int i = 0; i < 3; i++) {
 		SetConsoleCursorPosition(h, c);

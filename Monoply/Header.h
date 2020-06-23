@@ -54,3 +54,4 @@ void PrintPlayer(COORD& c, HANDLE h, PLAYER*& player_arr, int i);
 void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c);
 void OtherVatiant(COORD& c, HANDLE h, int& code);
 void UCanBuy(COORD& c, HANDLE h);
+void ClearText(COORD& c, HANDLE h);
