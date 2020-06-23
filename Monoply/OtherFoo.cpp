@@ -160,12 +160,12 @@ void ShowProperty(HANDLE h, int colour, int price, int ar_rent[], const char* ca
 	c.X = 3, c.Y += 2;
 	SetConsoleCursorPosition(h, c);
 	SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
-	cout << "Price - " << price;
+	cout << "Price - " << price << "$";
 	c.X = 3, c.Y++;
 	if (colour == (int)COLOURS::WHITE) {
 		for (int i = 0; i < 4; i++) {
 			SetConsoleCursorPosition(h, c);
-			cout << i + 1 << "# station - " << ar_rent[i] << "$";
+			cout << i + 1 << " station - " << ar_rent[i] << "$";
 			c.X = 3, c.Y++;
 		}
 	}
@@ -201,6 +201,7 @@ void ClearField(HANDLE h) {
 }
 
 void PrintPlayer(COORD& c, HANDLE h, PLAYER*& player_arr, int i) {
+	c.X = 28, c.Y = 2;
 	SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
 	SetConsoleCursorPosition(h, c);
 	cout << "Player #" << i + 1;
@@ -252,91 +253,6 @@ void Salary(PLAYER*& player_arr, int i, int salary) {
 	player_arr[i].money += salary;
 }
 
-void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c) {
-	char* str = new char[5];
-	COORD mouse;
-	HANDLE h_m = GetStdHandle(STD_INPUT_HANDLE);
-	SetConsoleMode(h_m, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
-	const int events = 256;
-	INPUT_RECORD all_events[events];
-	DWORD read_events;
-	while (true) {
-		ReadConsoleInput(h_m, all_events, events, &read_events);
-		for (int i = 0; i < read_events; i++) {
-			mouse.X = all_events[i].Event.MouseEvent.dwMousePosition.X;
-			mouse.Y = all_events[i].Event.MouseEvent.dwMousePosition.Y;
-			if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 7 && 
-				all_events[i].Event.MouseEvent.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED) {
-				if (_strcmpi(street_arr[temp].master, "Anyone has") == 0) {
-					strcpy_s(street_arr[temp].master, 49, "Player #");
-					_itoa_s(num + 1, str, 5, 10);
-					strcat_s(street_arr[temp].master, 49, str);
-					delete[] str;
-					ClearField(h);
-					switch (result) {
-					case(1):
-						temp = 0;
-						ShowProperty(h, street_arr[0].colour, street_arr[0].price, street_arr[0].rent, street_arr[0].call, street_arr[0].master, street_arr[0].property);
-						break;
-					case(2):
-						temp = 1;
-						ShowProperty(h, street_arr[1].colour, street_arr[1].price, street_arr[1].rent, street_arr[1].call, street_arr[1].master, street_arr[1].property);
-						break;
-					case(3):
-						temp = 2;
-						ShowProperty(h, street_arr[2].colour, street_arr[2].price, street_arr[2].rent, street_arr[2].call, street_arr[2].master, street_arr[2].property);
-						break;
-					case(4):
-						temp = 3;
-						ShowProperty(h, street_arr[3].colour, street_arr[3].price, street_arr[3].rent, street_arr[3].call, street_arr[3].master, street_arr[3].property);
-						break;
-					case(5):
-						temp = 4;
-						ShowProperty(h, street_arr[4].colour, street_arr[4].price, street_arr[4].rent, street_arr[4].call, street_arr[4].master, street_arr[4].property);
-						break;
-					case(6):
-						temp = 5;
-						ShowProperty(h, street_arr[5].colour, street_arr[5].price, street_arr[5].rent, street_arr[5].call, street_arr[5].master, street_arr[5].property);
-						break;
-					case(7):
-						temp = 6;
-						ShowProperty(h, street_arr[6].colour, street_arr[6].price, street_arr[6].rent, street_arr[6].call, street_arr[6].master, street_arr[6].property);
-						break;
-					case(8):
-						temp = 7;
-						ShowProperty(h, street_arr[7].colour, street_arr[7].price, street_arr[7].rent, street_arr[7].call, street_arr[7].master, street_arr[7].property);
-						break;
-					case(9):
-						temp = 8;
-						ShowProperty(h, street_arr[8].colour, street_arr[8].price, street_arr[8].rent, street_arr[8].call, street_arr[8].master, street_arr[8].property);
-						break;
-					case(10):
-						temp = 9;
-						ShowProperty(h, street_arr[9].colour, street_arr[9].price, street_arr[9].rent, street_arr[9].call, street_arr[9].master, street_arr[9].property);
-						break;
-					case(11):
-						temp = 10;
-						ShowProperty(h, street_arr[10].colour, street_arr[10].price, street_arr[10].rent, street_arr[10].call, street_arr[10].master, street_arr[10].property);
-						break;
-					case(12):
-						temp = 11;
-						ShowProperty(h, street_arr[11].colour, street_arr[11].price, street_arr[11].rent, street_arr[11].call, street_arr[11].master, street_arr[11].property);
-						break;
-					}
-				}
-				OtherVatiant(c, h, code);
-				ClearText(c, h);
-				if (code == 224 || code == 0)
-					code = _getch();
-				if (code == 13)
-					break;
-			}
-		}
-		if (code == 13)
-			break;
-	}
-}
-
 void OtherVatiant(COORD& c, HANDLE h, int& code) {
 	c.X = 28, c.Y = 15;
 	SetConsoleCursorPosition(h, c);
@@ -362,6 +278,115 @@ void ClearText(COORD& c, HANDLE h) {
 		SetConsoleCursorPosition(h, c);
 		cout << "                    ";
 		c.X = 28, c.Y++;
+	}
+}
+
+void Bought(int temp, STREET*& street_arr, PLAYER*& player_arr, int num) {
+	player_arr[num].money -= street_arr[temp].price;
+}
+
+void Lay(int temp, STREET*& street_arr, PLAYER*& player_arr, int num) {
+	player_arr[num].money += street_arr[temp].price / 2;
+}
+
+void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c, PLAYER*& player_arr) {
+	char* str = new char[5];
+	COORD mouse;
+	HANDLE h_m = GetStdHandle(STD_INPUT_HANDLE);
+	SetConsoleMode(h_m, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
+	const int events = 256;
+	INPUT_RECORD all_events[events];
+	DWORD read_events;
+	while (true) {
+		ReadConsoleInput(h_m, all_events, events, &read_events);
+		for (int i = 0; i < read_events; i++) {
+			mouse.X = all_events[i].Event.MouseEvent.dwMousePosition.X;
+			mouse.Y = all_events[i].Event.MouseEvent.dwMousePosition.Y;
+			if (all_events[i].Event.MouseEvent.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED) {
+				if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 7 
+					&& _strcmpi(street_arr[temp].master, "Anyone has") == 0) {
+					strcpy_s(street_arr[temp].master, 49, "Player #");
+					_itoa_s(num + 1, str, 5, 10);
+					strcat_s(street_arr[temp].master, 49, str);
+					Bought(temp, street_arr, player_arr, num);
+					PrintPlayer(c, h, player_arr, i);
+					PrintBar(c, h, i, temp, street_arr);
+					delete[] str;
+				}
+				else if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 8
+					&& _strcmpi(street_arr[temp].master, "Anyone has") != 0) {
+					strcpy_s(street_arr[temp].master, 49, "Anyone has");
+					Lay(temp, street_arr, player_arr, num);
+					PrintPlayer(c, h, player_arr, i);
+					PrintBar(c, h, i, temp, street_arr);
+				}
+				/*else if (mouse.X > 27 && mouse.X < 37 && mouse.Y == 9) {
+					cout << "!";
+				}*/
+				else if (mouse.X > 27 && mouse.X < 39 && mouse.Y == 10
+					&& _strcmpi(street_arr[temp].master, "Anyone has") != 0) {
+				}
+				ClearField(h);
+				switch (result) {
+				case(1):
+					temp = 0;
+					ShowProperty(h, street_arr[0].colour, street_arr[0].price, street_arr[0].rent, street_arr[0].call, street_arr[0].master, street_arr[0].property);
+					break;
+				case(2):
+					temp = 1;
+					ShowProperty(h, street_arr[1].colour, street_arr[1].price, street_arr[1].rent, street_arr[1].call, street_arr[1].master, street_arr[1].property);
+					break;
+				case(3):
+					temp = 2;
+					ShowProperty(h, street_arr[2].colour, street_arr[2].price, street_arr[2].rent, street_arr[2].call, street_arr[2].master, street_arr[2].property);
+					break;
+				case(4):
+					temp = 3;
+					ShowProperty(h, street_arr[3].colour, street_arr[3].price, street_arr[3].rent, street_arr[3].call, street_arr[3].master, street_arr[3].property);
+					break;
+				case(5):
+					temp = 4;
+					ShowProperty(h, street_arr[4].colour, street_arr[4].price, street_arr[4].rent, street_arr[4].call, street_arr[4].master, street_arr[4].property);
+					break;
+				case(6):
+					temp = 5;
+					ShowProperty(h, street_arr[5].colour, street_arr[5].price, street_arr[5].rent, street_arr[5].call, street_arr[5].master, street_arr[5].property);
+					break;
+				case(7):
+					temp = 6;
+					ShowProperty(h, street_arr[6].colour, street_arr[6].price, street_arr[6].rent, street_arr[6].call, street_arr[6].master, street_arr[6].property);
+					break;
+				case(8):
+					temp = 7;
+					ShowProperty(h, street_arr[7].colour, street_arr[7].price, street_arr[7].rent, street_arr[7].call, street_arr[7].master, street_arr[7].property);
+					break;
+				case(9):
+					temp = 8;
+					ShowProperty(h, street_arr[8].colour, street_arr[8].price, street_arr[8].rent, street_arr[8].call, street_arr[8].master, street_arr[8].property);
+					break;
+				case(10):
+					temp = 9;
+					ShowProperty(h, street_arr[9].colour, street_arr[9].price, street_arr[9].rent, street_arr[9].call, street_arr[9].master, street_arr[9].property);
+					break;
+				case(11):
+					temp = 10;
+					ShowProperty(h, street_arr[10].colour, street_arr[10].price, street_arr[10].rent, street_arr[10].call, street_arr[10].master, street_arr[10].property);
+					break;
+				case(12):
+					temp = 11;
+					ShowProperty(h, street_arr[11].colour, street_arr[11].price, street_arr[11].rent, street_arr[11].call, street_arr[11].master, street_arr[11].property);
+					break;
+				}
+				OtherVatiant(c, h, code);
+				ClearText(c, h);
+				if (code == 224 || code == 0)
+					code = _getch();
+				if (code == 13)
+					break;
+			}
+		}
+		if (code == 13)
+			break;
 	}
 }
 
@@ -438,7 +463,7 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 				code = _getch();
 			if (code != 13) {
 				UCanBuy(c, h);
-				Choose(h, code, i, temp, street_arr, result, c);
+				Choose(h, code, i, temp, street_arr, result, c, player_arr);
 			}
 			ClearField(h);
 			Salary(player_arr, i, 20);
