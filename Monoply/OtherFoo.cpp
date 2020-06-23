@@ -244,7 +244,7 @@ void PrintBar(COORD& c, HANDLE h, int i, int temp, STREET*& street_arr) {
 	cout << "Lay house";
 	c.X = 28, c.Y++;
 	SetConsoleCursorPosition(h, c);
-	cout << "Build a house";
+	cout << "Build house";
 	c.X = 28, c.Y = 2;
 }
 
@@ -252,8 +252,8 @@ void Salary(PLAYER*& player_arr, int i, int salary) {
 	player_arr[i].money += salary;
 }
 
-void Choose(int& code, int i, int temp, STREET*& street_arr) {
-	char* str{};
+void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c) {
+	char* str = new char[5];
 	COORD mouse;
 	HANDLE h_m = GetStdHandle(STD_INPUT_HANDLE);
 	SetConsoleMode(h_m, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
@@ -265,22 +265,106 @@ void Choose(int& code, int i, int temp, STREET*& street_arr) {
 		for (int i = 0; i < read_events; i++) {
 			mouse.X = all_events[i].Event.MouseEvent.dwMousePosition.X;
 			mouse.Y = all_events[i].Event.MouseEvent.dwMousePosition.Y;
-			if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 7) {
+			if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 7 && 
+				all_events[i].Event.MouseEvent.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED) {
 				if (_strcmpi(street_arr[temp].master, "Anyone has") == 0) {
 					strcpy_s(street_arr[temp].master, 49, "Player #");
-					/*_itoa_s(i, str, 5, 10);
-					strcat_s(street_arr[temp].master, 5, str);*/
+					_itoa_s(num + 1, str, 5, 10);
+					strcat_s(street_arr[temp].master, 49, str);
+					delete[] str;
+					ClearField(h);
+					switch (result) {
+					case(1):
+						temp = 0;
+						ShowProperty(h, street_arr[0].colour, street_arr[0].price, street_arr[0].rent, street_arr[0].call, street_arr[0].master, street_arr[0].property);
+						break;
+					case(2):
+						temp = 1;
+						ShowProperty(h, street_arr[1].colour, street_arr[1].price, street_arr[1].rent, street_arr[1].call, street_arr[1].master, street_arr[1].property);
+						break;
+					case(3):
+						temp = 2;
+						ShowProperty(h, street_arr[2].colour, street_arr[2].price, street_arr[2].rent, street_arr[2].call, street_arr[2].master, street_arr[2].property);
+						break;
+					case(4):
+						temp = 3;
+						ShowProperty(h, street_arr[3].colour, street_arr[3].price, street_arr[3].rent, street_arr[3].call, street_arr[3].master, street_arr[3].property);
+						break;
+					case(5):
+						temp = 4;
+						ShowProperty(h, street_arr[4].colour, street_arr[4].price, street_arr[4].rent, street_arr[4].call, street_arr[4].master, street_arr[4].property);
+						break;
+					case(6):
+						temp = 5;
+						ShowProperty(h, street_arr[5].colour, street_arr[5].price, street_arr[5].rent, street_arr[5].call, street_arr[5].master, street_arr[5].property);
+						break;
+					case(7):
+						temp = 6;
+						ShowProperty(h, street_arr[6].colour, street_arr[6].price, street_arr[6].rent, street_arr[6].call, street_arr[6].master, street_arr[6].property);
+						break;
+					case(8):
+						temp = 7;
+						ShowProperty(h, street_arr[7].colour, street_arr[7].price, street_arr[7].rent, street_arr[7].call, street_arr[7].master, street_arr[7].property);
+						break;
+					case(9):
+						temp = 8;
+						ShowProperty(h, street_arr[8].colour, street_arr[8].price, street_arr[8].rent, street_arr[8].call, street_arr[8].master, street_arr[8].property);
+						break;
+					case(10):
+						temp = 9;
+						ShowProperty(h, street_arr[9].colour, street_arr[9].price, street_arr[9].rent, street_arr[9].call, street_arr[9].master, street_arr[9].property);
+						break;
+					case(11):
+						temp = 10;
+						ShowProperty(h, street_arr[10].colour, street_arr[10].price, street_arr[10].rent, street_arr[10].call, street_arr[10].master, street_arr[10].property);
+						break;
+					case(12):
+						temp = 11;
+						ShowProperty(h, street_arr[11].colour, street_arr[11].price, street_arr[11].rent, street_arr[11].call, street_arr[11].master, street_arr[11].property);
+						break;
+					}
 				}
+				/*OtherVatiant(c, h, code);*/
+				code = _getch();
+				if (code == 224 || code == 0)
+					code = _getch();
+				if (code == 13)
+					break;
 			}
-			//cout << mouse.X << mouse.Y;
 		}
+		if (code == 13)
+			break;
+	}
+}
+
+void OtherVatiant(COORD& c, HANDLE h, int& code) {
+	c.X = 28, c.Y += 13;
+	SetConsoleCursorPosition(h, c);
+	SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
+	cout << "Press ENTER for next";
+	c.X = 28, c.Y++;
+	SetConsoleCursorPosition(h, c);
+	cout << "Or ANY KEYS";
+	code = _getch();
+}
+
+void UCanBuy(COORD& c, HANDLE h) {
+	c.X = 28, c.Y++;
+	SetConsoleCursorPosition(h, c);
+	cout << "You can buy!";
+	Sleep(1000);
+	c.X = 28, c.Y -= 2;
+	for (int i = 0; i < 3; i++) {
+		SetConsoleCursorPosition(h, c);
+		cout << "                    ";
+		c.X = 28, c.Y++;
 	}
 }
 
 void GameEngine(HANDLE h, STREET& street, int count_players) {
 	int temp;
 	int salary = 20;
-	int code;
+	int code = 0;
 	STREET* street_arr = new STREET[12];
     street_arr = ArrOfTheProperty(street);
 	PLAYER* player_arr = new PLAYER[count_players];
@@ -345,10 +429,18 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 				break;
 			}
 			PrintBar(c, h, i, temp, street_arr);
-			result = 0;
-			Choose(code, i, temp, street_arr);
+			OtherVatiant(c, h, code);
+			if (code == 224 || code == 0)
+				code = _getch();
+			if (code != 13) {
+				UCanBuy(c, h);
+				Choose(h, code, i, temp, street_arr, result, c);
+			}
 			ClearField(h);
 			Salary(player_arr, i, 20);
+			result = 0;
+			code = 0;
+			c.X = 28, c.Y = 2;
 		}
 	}
 }

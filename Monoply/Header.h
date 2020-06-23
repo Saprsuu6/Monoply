@@ -51,4 +51,6 @@ void ClearField(HANDLE h);
 void PrintBar(COORD& c, HANDLE h, int i, int temp, STREET*& street_arr);
 void Salary(PLAYER*& player_arr, int i, int salary);
 void PrintPlayer(COORD& c, HANDLE h, PLAYER*& player_arr, int i);
-void Choose(int& code, int i, int temp, STREET*& street_arr);
+void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c);
+void OtherVatiant(COORD& c, HANDLE h, int& code);
+void UCanBuy(COORD& c, HANDLE h);
