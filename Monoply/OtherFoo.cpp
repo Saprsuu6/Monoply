@@ -229,24 +229,41 @@ void PrintBar(COORD& c, HANDLE h, int i, int temp, STREET*& street_arr) {
 	SetConsoleCursorPosition(h, c);
 	if (_strcmpi(street_arr[temp].master, "Anyone has") == 0)
 		SetConsoleTextAttribute(h, 1);
+	else if (_strcmpi(street_arr[temp].master, "Anyone has") != 0
+		&& street_arr[temp].property > 0)
+		SetConsoleTextAttribute(h, 1);
 	else
 		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
 	cout << "Lay";
 	c.X = 28, c.Y++;
 	SetConsoleCursorPosition(h, c);
-	if (street_arr[temp].property > 0 && 
-		(_strcmpi(street_arr[temp].call, "1# Railway st.") != 0 ||
-		_strcmpi(street_arr[temp].call, "2# Railway st.") != 0 || 
-		_strcmpi(street_arr[temp].call, "3# Railway st.") != 0 || 
-		_strcmpi(street_arr[temp].call, "4# Railway st.") != 0))
-		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
-	else
-		SetConsoleTextAttribute(h, 1);
+	SetConsoleTextAttribute(h, 1);
 	cout << "Lay house";
 	c.X = 28, c.Y++;
 	SetConsoleCursorPosition(h, c);
 	cout << "Build house";
-	c.X = 28, c.Y = 2;
+	c.X = 28, c.Y--;
+	SetConsoleCursorPosition(h, c);
+	if (_strcmpi(street_arr[temp].master, "Anyone has") != 0) {
+		if (_strcmpi(street_arr[temp].call, "1# Railway st.") != 0 ||
+			_strcmpi(street_arr[temp].call, "2# Railway st.") != 0 ||
+			_strcmpi(street_arr[temp].call, "3# Railway st.") != 0 ||
+			_strcmpi(street_arr[temp].call, "4# Railway st.") != 0) {
+			if (street_arr[temp].property > 0)
+				SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
+			else
+				SetConsoleTextAttribute(h, 1);
+				cout << "Lay house";
+				c.X = 28, c.Y++;
+				if (street_arr[temp].property >= 0)
+					SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
+				else
+					SetConsoleTextAttribute(h, 1);
+			SetConsoleCursorPosition(h, c);
+			cout << "Build house";
+			c.X = 28, c.Y = 2;
+		}
+	}
 }
 
 void Salary(PLAYER*& player_arr, int i, int salary) {
@@ -289,8 +306,11 @@ void Lay(int temp, STREET*& street_arr, PLAYER*& player_arr, int num) {
 	player_arr[num].money += street_arr[temp].price / 2;
 }
 
+void BuildHouse(int temp, STREET*& street_arr) {
+	street_arr[temp].property += 1;
+}
+
 void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c, PLAYER*& player_arr) {
-	char* str = new char[5];
 	COORD mouse;
 	HANDLE h_m = GetStdHandle(STD_INPUT_HANDLE);
 	SetConsoleMode(h_m, ENABLE_MOUSE_INPUT | ENABLE_EXTENDED_FLAGS);
@@ -305,6 +325,7 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 			if (all_events[i].Event.MouseEvent.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED) {
 				if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 7 
 					&& _strcmpi(street_arr[temp].master, "Anyone has") == 0) {
+					char* str = new char[5];
 					strcpy_s(street_arr[temp].master, 49, "Player #");
 					_itoa_s(num + 1, str, 5, 10);
 					strcat_s(street_arr[temp].master, 49, str);
@@ -314,7 +335,8 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 					delete[] str;
 				}
 				else if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 8
-					&& _strcmpi(street_arr[temp].master, "Anyone has") != 0) {
+					&& _strcmpi(street_arr[temp].master, "Anyone has") != 0
+					&& street_arr[temp].property == 0) {
 					strcpy_s(street_arr[temp].master, 49, "Anyone has");
 					Lay(temp, street_arr, player_arr, num);
 					PrintPlayer(c, h, player_arr, i);
@@ -324,7 +346,11 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 					cout << "!";
 				}*/
 				else if (mouse.X > 27 && mouse.X < 39 && mouse.Y == 10
-					&& _strcmpi(street_arr[temp].master, "Anyone has") != 0) {
+					&& _strcmpi(street_arr[temp].master, "Anyone has") != 0
+					&& street_arr[temp].property < 5) {
+					BuildHouse(temp, street_arr);
+					PrintPlayer(c, h, player_arr, i);
+					PrintBar(c, h, i, temp, street_arr);
 				}
 				ClearField(h);
 				switch (result) {
