@@ -218,7 +218,7 @@ void PrintPlayer(COORD& c, HANDLE h, PLAYER*& player_arr, int i) {
 	c.X = 28, c.Y = 2;
 }
 
-void PrintBar(COORD& c, HANDLE h, int i, int temp, STREET*& street_arr) {
+void PrintBar(COORD& c, HANDLE h, int temp, STREET*& street_arr) {
 	c.Y += 5;
 	SetConsoleCursorPosition(h, c);
 	if (_strcmpi(street_arr[temp].master, "Anyone has") == 0)
@@ -336,8 +336,8 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 					_itoa_s(num + 1, str, 5, 10);
 					strcat_s(street_arr[temp].master, 49, str);
 					Bought(temp, street_arr, player_arr, num);
-					PrintPlayer(c, h, player_arr, i);
-					PrintBar(c, h, i, temp, street_arr);
+					PrintPlayer(c, h, player_arr, num);
+					PrintBar(c, h, temp, street_arr);
 					delete[] str;
 				}
 				else if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 8
@@ -345,14 +345,14 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 					&& street_arr[temp].property == 0) {
 					strcpy_s(street_arr[temp].master, 49, "Anyone has");
 					Lay(temp, street_arr, player_arr, num);
-					PrintPlayer(c, h, player_arr, i);
-					PrintBar(c, h, i, temp, street_arr);
+					PrintPlayer(c, h, player_arr, num);
+					PrintBar(c, h, temp, street_arr);
 				}
 				else if (mouse.X > 27 && mouse.X < 37 && mouse.Y == 9
 					&& street_arr[temp].property > 0) {
 					LayHouse(temp, street_arr, player_arr, num);
-					PrintPlayer(c, h, player_arr, i);
-					PrintBar(c, h, i, temp, street_arr);
+					PrintPlayer(c, h, player_arr, num);
+					PrintBar(c, h, temp, street_arr);
 				}
 				else if (mouse.X > 27 && mouse.X < 39 && mouse.Y == 10
 					&& _strcmpi(street_arr[temp].master, "Anyone has") != 0 &&
@@ -362,8 +362,8 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 					_strcmpi(street_arr[temp].call, "4# Railway st.") != 0 && 
 					street_arr[temp].property < 5) {
 					BuildHouse(temp, street_arr, player_arr, num);
-					PrintPlayer(c, h, player_arr, i);
-					PrintBar(c, h, i, temp, street_arr);
+					PrintPlayer(c, h, player_arr, num);
+					PrintBar(c, h, temp, street_arr);
 				}
 				ClearField(h);
 				switch (result) {
@@ -437,15 +437,15 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
     street_arr = ArrOfTheProperty(street);
 	PLAYER* player_arr = new PLAYER[count_players];
 	player_arr = PayersArr(count_players);
-	PayersArr(count_players);
 	int result = 0;
 	COORD c{ 28,2 };
 	while (true) {
 		for (int i = 0; i < count_players; i++) {
+			Salary(player_arr, i, salary);
 			PrintPlayer(c, h, player_arr, i);
 			Stone(h, 11, 17, result); // first stone
 			Stone(h, 13, 17, result); // seconsd stone
-			Sleep(200);
+			Sleep(200); 
 			switch (result) {
 			case(1):
 				temp = 0;
@@ -496,7 +496,7 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 				ShowProperty(h, street_arr[11].colour, street_arr[11].price, street_arr[11].rent, street_arr[11].call, street_arr[11].master, street_arr[11].property);
 				break;
 			}
-			PrintBar(c, h, i, temp, street_arr);
+			PrintBar(c, h, temp, street_arr);
 			OtherVatiant(c, h, code);
 			if (code == 224 || code == 0)
 				code = _getch();
@@ -505,7 +505,6 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 				Choose(h, code, i, temp, street_arr, result, c, player_arr);
 			}
 			ClearField(h);
-			Salary(player_arr, i, salary);
 			result = 0;
 			code = 0;
 			c.X = 28, c.Y = 2;
