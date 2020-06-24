@@ -56,3 +56,5 @@ void OtherVatiant(COORD& c, HANDLE h, int& code);
 void UCanBuy(COORD& c, HANDLE h);
 void ClearText(COORD& c, HANDLE h);
 void Bought(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
+void Lay(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
+void BuildHouse(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
