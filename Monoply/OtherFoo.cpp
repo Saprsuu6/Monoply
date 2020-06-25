@@ -163,14 +163,16 @@ void ShowProperty(HANDLE h, int colour, int price, int ar_rent[], const char* ca
 	SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
 	cout << "Price - " << price << "$";
 	c.X = 3, c.Y++;
-	if (colour == (int)COLOURS::WHITE) {
+	SetConsoleCursorPosition(h, c);
+	cout << "Rent - " << ar_rent[0] << "$";
+	/*if (colour == (int)COLOURS::WHITE) {
 		for (int i = 0; i < 4; i++) {
 			SetConsoleCursorPosition(h, c);
 			cout << i + 1 << " station - " << ar_rent[i] << "$";
 			c.X = 3, c.Y++;
 		}
-	}
-	else {
+	}*/
+	if (colour != (int)COLOURS::WHITE) {
 		for (int i = 0; i < 6; i++) {
 			SetConsoleCursorPosition(h, c);
 			if (i == 0)
@@ -181,10 +183,10 @@ void ShowProperty(HANDLE h, int colour, int price, int ar_rent[], const char* ca
 				cout << i << " House - " << ar_rent[i] << "$";
 			c.X = 3, c.Y++;
 		}
+		SetConsoleTextAttribute(h, colour);
+		SetConsoleCursorPosition(h, c);
+		cout << "Property - " << property;
 	}
-	SetConsoleTextAttribute(h, colour);
-	SetConsoleCursorPosition(h, c);
-	cout << "Property - " << property;
 	c.X = 3, c.Y += 2;
 	SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
 	SetConsoleCursorPosition(h, c);
@@ -333,41 +335,38 @@ void LayHouse(int temp, STREET*& street_arr, PLAYER*& player_arr, int num) {
     player_arr[num].money += street_arr[temp].price / 4;
 }
 
-//void PayRent(int temp, STREET*& street_arr, PLAYER*& player_arr, int num) {
-//	if (_strcmpi(street_arr[temp].call, "1# Railway st.") != 0 &&
-//		_strcmpi(street_arr[temp].call, "2# Railway st.") != 0 &&
-//		_strcmpi(street_arr[temp].call, "3# Railway st.") != 0 &&
-//		_strcmpi(street_arr[temp].call, "4# Railway st.") != 0)
-//		switch (street_arr[temp].property) {
-//	case (0):
-//		player_arr[num].money -= street_arr[temp].rent[0];
-//	case (1):
-//		player_arr[num].money -= street_arr[temp].rent[1];
-//	case (2):
-//		player_arr[num].money -= street_arr[temp].rent[2];
-//	case (3):
-//		player_arr[num].money -= street_arr[temp].rent[3];
-//	case (4):
-//		player_arr[num].money -= street_arr[temp].rent[4];
-//	case (5):
-//		player_arr[num].money -= street_arr[temp].rent[5];
-//	}
-//	else 
-//		switch (street_arr[temp].property) {
-//		case (0):
-//			player_arr[num].money -= street_arr[temp].rent[0];
-//		case (1):
-//			player_arr[num].money -= street_arr[temp].rent[1];
-//		case (2):
-//			player_arr[num].money -= street_arr[temp].rent[2];
-//		case (3):
-//			player_arr[num].money -= street_arr[temp].rent[3];
-//		case (4):
-//			player_arr[num].money -= street_arr[temp].rent[4];
-//		case (5):
-//			player_arr[num].money -= street_arr[temp].rent[5];
-//		}
-//}
+void PayRent(int temp, STREET*& street_arr, PLAYER*& player_arr, int num) {
+	if (_strcmpi(street_arr[temp].call, "1# Railway st.") != 0 &&
+		_strcmpi(street_arr[temp].call, "2# Railway st.") != 0 &&
+		_strcmpi(street_arr[temp].call, "3# Railway st.") != 0 &&
+		_strcmpi(street_arr[temp].call, "4# Railway st.") != 0) {
+		switch (street_arr[temp].property) {
+		case (0):
+			player_arr[num].money -= street_arr[temp].rent[0];
+			break;
+		case (1):
+			player_arr[num].money -= street_arr[temp].rent[1];
+			break;
+		case (2):
+			player_arr[num].money -= street_arr[temp].rent[2];
+			break;
+		case (3):
+			player_arr[num].money -= street_arr[temp].rent[3];
+			break;
+		case (4):
+			player_arr[num].money -= street_arr[temp].rent[4];
+			break;
+		case (5):
+			player_arr[num].money -= street_arr[temp].rent[5];
+			break;
+		}
+		street_arr[temp].box = player_arr[num].money - street_arr[temp].rent[0];
+	}
+	else {
+		player_arr[num].money -= street_arr[temp].rent[0];
+	    street_arr[temp].box = player_arr[num].money - street_arr[temp].rent[0];
+	}
+}
 
 void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c, PLAYER*& player_arr) {
 	COORD mouse;

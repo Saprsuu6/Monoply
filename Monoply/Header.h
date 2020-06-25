@@ -7,6 +7,7 @@ using namespace std;
 enum class COLOURS { WHITE = 15, BROWN = 12, CYAN = 11, PINK = 13, ORANGE = 6, RED = 4, YELLOW = 14, GREEN = 10, BLUE = 9 };
 
 struct STREET {
+	int box;
 	int property;
 	int colour;
 	int price;
@@ -30,7 +31,7 @@ struct RENT {
 	int yellow[size] = { 24, 120, 360, 850, 1025, 1200 };
 	int green[size] = { 28, 150, 450, 1000, 1200, 1400 };
 	int blue[size] = { 50, 200, 600, 1400, 1700, 2000 };
-	int railway[size - 2] = { 25, 50, 100, 200 };
+	int railway[size - 2] = { 100, 0, 0, 0 };
 };
 
 int main();
