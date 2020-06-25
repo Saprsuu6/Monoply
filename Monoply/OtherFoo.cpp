@@ -63,7 +63,7 @@ void ChoosePlayers(HANDLE h, int& count_players) {
 }
 
 PLAYER* PayersArr(int count_players) {
-	int first_money = 1200;
+	int first_money = 625;
 	PLAYER* player_arr = new PLAYER[count_players];
 	for (int i = 0; i < count_players; i++) {
 		player_arr[i].money = first_money;
@@ -218,7 +218,12 @@ void PrintPlayer(COORD& c, HANDLE h, PLAYER*& player_arr, int i) {
 	c.X = 28, c.Y = 2;
 }
 
-void PrintBar(COORD& c, HANDLE h, int temp, STREET*& street_arr) {
+void PrintBar(COORD& c, HANDLE h, int temp, STREET*& street_arr, int num) {
+	char* str = new char[5];
+	char* temp_str = new char[20];
+	_itoa_s(num + 1, str, 5, 10);
+	strcpy_s(temp_str, 19, "Player #");
+	strcat_s(temp_str, 19, str);
 	c.Y += 5;
 	SetConsoleCursorPosition(h, c);
 	if (_strcmpi(street_arr[temp].master, "Anyone has") == 0)
@@ -228,10 +233,10 @@ void PrintBar(COORD& c, HANDLE h, int temp, STREET*& street_arr) {
 	cout << "Buy";
 	c.X = 28, c.Y++;
 	SetConsoleCursorPosition(h, c);
-	if (_strcmpi(street_arr[temp].master, "Anyone has") == 0)
-		SetConsoleTextAttribute(h, 1);
-	else if (_strcmpi(street_arr[temp].master, "Anyone has") != 0
-		&& street_arr[temp].property > 0)
+	if (_strcmpi(street_arr[temp].master, temp_str) != 0 || 
+		_strcmpi(street_arr[temp].master, "Anyone has") == 0 ||
+		_strcmpi(street_arr[temp].master, "Anyone has") != 0 &&
+		street_arr[temp].property > 0)
 		SetConsoleTextAttribute(h, 1);
 	else
 		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
@@ -243,27 +248,39 @@ void PrintBar(COORD& c, HANDLE h, int temp, STREET*& street_arr) {
 	c.X = 28, c.Y++;
 	SetConsoleCursorPosition(h, c);
 	cout << "Build house";
-	c.X = 28, c.Y--;
-	SetConsoleCursorPosition(h, c);
 	if (_strcmpi(street_arr[temp].master, "Anyone has") != 0 &&
 		_strcmpi(street_arr[temp].call, "1# Railway st.") != 0 &&
 		_strcmpi(street_arr[temp].call, "2# Railway st.") != 0 &&
 		_strcmpi(street_arr[temp].call, "3# Railway st.") != 0 &&
 		_strcmpi(street_arr[temp].call, "4# Railway st.") != 0) {
-		if (street_arr[temp].property > 0)
+		c.X = 28, c.Y--;
+		SetConsoleCursorPosition(h, c);
+		if (_strcmpi(street_arr[temp].master, temp_str) == 0 && 
+			street_arr[temp].property > 0)
 			SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
 		else
 			SetConsoleTextAttribute(h, 1);
 		cout << "Lay house";
 		c.X = 28, c.Y++;
-		if (street_arr[temp].property >= 0)
+		if (_strcmpi(street_arr[temp].master, temp_str) == 0 &&
+			street_arr[temp].property >= 0)
 			SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
 		else
 			SetConsoleTextAttribute(h, 1);
 		SetConsoleCursorPosition(h, c);
 		cout << "Build house";
-		c.X = 28, c.Y = 2;
 	}
+	c.X = 28, c.Y += 2;
+	SetConsoleCursorPosition(h, c);
+	if (_strcmpi(street_arr[temp].master, "Anyone has") != 0 &&
+		_strcmpi(street_arr[temp].master, temp_str) != 0)
+		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
+	else
+		SetConsoleTextAttribute(h, 1);
+	cout << "Pay Rent";
+	c.X = 28, c.Y = 2;
+	delete[] str;
+	delete[] temp_str;
 }
 
 void Salary(PLAYER*& player_arr, int i, int salary) {
@@ -316,6 +333,42 @@ void LayHouse(int temp, STREET*& street_arr, PLAYER*& player_arr, int num) {
     player_arr[num].money += street_arr[temp].price / 4;
 }
 
+//void PayRent(int temp, STREET*& street_arr, PLAYER*& player_arr, int num) {
+//	if (_strcmpi(street_arr[temp].call, "1# Railway st.") != 0 &&
+//		_strcmpi(street_arr[temp].call, "2# Railway st.") != 0 &&
+//		_strcmpi(street_arr[temp].call, "3# Railway st.") != 0 &&
+//		_strcmpi(street_arr[temp].call, "4# Railway st.") != 0)
+//		switch (street_arr[temp].property) {
+//	case (0):
+//		player_arr[num].money -= street_arr[temp].rent[0];
+//	case (1):
+//		player_arr[num].money -= street_arr[temp].rent[1];
+//	case (2):
+//		player_arr[num].money -= street_arr[temp].rent[2];
+//	case (3):
+//		player_arr[num].money -= street_arr[temp].rent[3];
+//	case (4):
+//		player_arr[num].money -= street_arr[temp].rent[4];
+//	case (5):
+//		player_arr[num].money -= street_arr[temp].rent[5];
+//	}
+//	else 
+//		switch (street_arr[temp].property) {
+//		case (0):
+//			player_arr[num].money -= street_arr[temp].rent[0];
+//		case (1):
+//			player_arr[num].money -= street_arr[temp].rent[1];
+//		case (2):
+//			player_arr[num].money -= street_arr[temp].rent[2];
+//		case (3):
+//			player_arr[num].money -= street_arr[temp].rent[3];
+//		case (4):
+//			player_arr[num].money -= street_arr[temp].rent[4];
+//		case (5):
+//			player_arr[num].money -= street_arr[temp].rent[5];
+//		}
+//}
+
 void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c, PLAYER*& player_arr) {
 	COORD mouse;
 	HANDLE h_m = GetStdHandle(STD_INPUT_HANDLE);
@@ -329,42 +382,52 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 			mouse.X = all_events[i].Event.MouseEvent.dwMousePosition.X;
 			mouse.Y = all_events[i].Event.MouseEvent.dwMousePosition.Y;
 			if (all_events[i].Event.MouseEvent.dwButtonState == FROM_LEFT_1ST_BUTTON_PRESSED) {
+				char* str = new char[5];
+				char* temp_str = new char[20];
+				_itoa_s(num + 1, str, 5, 10);
+				strcpy_s(temp_str, 19, "Player #");
+				strcat_s(temp_str, 19, str);
 				if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 7 
 					&& _strcmpi(street_arr[temp].master, "Anyone has") == 0) {
-					char* str = new char[5];
 					strcpy_s(street_arr[temp].master, 49, "Player #");
-					_itoa_s(num + 1, str, 5, 10);
 					strcat_s(street_arr[temp].master, 49, str);
 					Bought(temp, street_arr, player_arr, num);
 					PrintPlayer(c, h, player_arr, num);
-					PrintBar(c, h, temp, street_arr);
-					delete[] str;
+					PrintBar(c, h, temp, street_arr, num);
 				}
-				else if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 8
-					&& _strcmpi(street_arr[temp].master, "Anyone has") != 0
-					&& street_arr[temp].property == 0) {
-					strcpy_s(street_arr[temp].master, 49, "Anyone has");
-					Lay(temp, street_arr, player_arr, num);
-					PrintPlayer(c, h, player_arr, num);
-					PrintBar(c, h, temp, street_arr);
+				if (_strcmpi(street_arr[temp].master, temp_str) == 0) {
+					if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 8
+						&& _strcmpi(street_arr[temp].master, "Anyone has") != 0
+						&& street_arr[temp].property == 0) {
+						strcpy_s(street_arr[temp].master, 49, "Anyone has");
+						Lay(temp, street_arr, player_arr, num);
+						PrintPlayer(c, h, player_arr, num);
+						PrintBar(c, h, temp, street_arr, num);
+					}
+					else if (mouse.X > 27 && mouse.X < 37 && mouse.Y == 9
+						&& street_arr[temp].property > 0) {
+						LayHouse(temp, street_arr, player_arr, num);
+						PrintPlayer(c, h, player_arr, num);
+						PrintBar(c, h, temp, street_arr, num);
+					}
+					else if (mouse.X > 27 && mouse.X < 39 && mouse.Y == 10
+						&& _strcmpi(street_arr[temp].master, "Anyone has") != 0 &&
+						_strcmpi(street_arr[temp].call, "1# Railway st.") != 0 &&
+						_strcmpi(street_arr[temp].call, "2# Railway st.") != 0 &&
+						_strcmpi(street_arr[temp].call, "3# Railway st.") != 0 &&
+						_strcmpi(street_arr[temp].call, "4# Railway st.") != 0 &&
+						street_arr[temp].property < 5) {
+						BuildHouse(temp, street_arr, player_arr, num);
+						PrintPlayer(c, h, player_arr, num);
+						PrintBar(c, h, temp, street_arr, num);
+					}
 				}
-				else if (mouse.X > 27 && mouse.X < 37 && mouse.Y == 9
-					&& street_arr[temp].property > 0) {
-					LayHouse(temp, street_arr, player_arr, num);
-					PrintPlayer(c, h, player_arr, num);
-					PrintBar(c, h, temp, street_arr);
+				if (_strcmpi(street_arr[temp].master, "Anyone has") != 0 && 
+					_strcmpi(street_arr[temp].master, temp_str) != 0) {
+
 				}
-				else if (mouse.X > 27 && mouse.X < 39 && mouse.Y == 10
-					&& _strcmpi(street_arr[temp].master, "Anyone has") != 0 &&
-					_strcmpi(street_arr[temp].call, "1# Railway st.") != 0 &&
-					_strcmpi(street_arr[temp].call, "2# Railway st.") != 0 &&
-					_strcmpi(street_arr[temp].call, "3# Railway st.") != 0 &&
-					_strcmpi(street_arr[temp].call, "4# Railway st.") != 0 && 
-					street_arr[temp].property < 5) {
-					BuildHouse(temp, street_arr, player_arr, num);
-					PrintPlayer(c, h, player_arr, num);
-					PrintBar(c, h, temp, street_arr);
-				}
+				delete[] str;
+				delete[] temp_str;
 				ClearField(h);
 				switch (result) {
 				case(1):
@@ -441,7 +504,6 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 	COORD c{ 28,2 };
 	while (true) {
 		for (int i = 0; i < count_players; i++) {
-			Salary(player_arr, i, salary);
 			PrintPlayer(c, h, player_arr, i);
 			Stone(h, 11, 17, result); // first stone
 			Stone(h, 13, 17, result); // seconsd stone
@@ -496,7 +558,7 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 				ShowProperty(h, street_arr[11].colour, street_arr[11].price, street_arr[11].rent, street_arr[11].call, street_arr[11].master, street_arr[11].property);
 				break;
 			}
-			PrintBar(c, h, temp, street_arr);
+			PrintBar(c, h, temp, street_arr, i);
 			OtherVatiant(c, h, code);
 			if (code == 224 || code == 0)
 				code = _getch();
@@ -504,6 +566,7 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 				UCanBuy(c, h);
 				Choose(h, code, i, temp, street_arr, result, c, player_arr);
 			}
+			Salary(player_arr, i, salary);
 			ClearField(h);
 			result = 0;
 			code = 0;
