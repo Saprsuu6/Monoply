@@ -17,6 +17,7 @@ struct STREET {
 };
 
 struct PLAYER {
+	int rl;
 	int money;
 	bool prison;
 };
@@ -31,7 +32,7 @@ struct RENT {
 	int yellow[size] = { 24, 120, 360, 850, 1025, 1200 };
 	int green[size] = { 28, 150, 450, 1000, 1200, 1400 };
 	int blue[size] = { 50, 200, 600, 1400, 1700, 2000 };
-	int railway[size - 2] = { 100, 0, 0, 0 };
+	int railway[size - 2] = { 25, 50, 100, 200 };
 };
 
 int main();
@@ -59,3 +60,5 @@ void ClearText(COORD& c, HANDLE h);
 void Bought(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
 void Lay(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
 void BuildHouse(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
+void LayHouse(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
+void PayRent(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
