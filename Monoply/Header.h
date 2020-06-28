@@ -45,7 +45,7 @@ PLAYER* PayersArr(int count_players);
 void GameField();
 STREET* ArrOfTheProperty(STREET& street);
 STREET CreateStreet(STREET& street, int colour, int price, int rent[], const char* call, const char* master, int property);
-void Stone(HANDLE h, int x, int y, int& result);
+int Stone(HANDLE h, int x, int y);
 void PrintStone(HANDLE h, int num, int x, int y);
 void GameEngine(HANDLE h, STREET& street, int count_players);
 void ShowProperty(HANDLE h, int colour, int price, int ar_rent[], const char* call, const char* master, int property);
