@@ -54,7 +54,8 @@ void ClearField(HANDLE h);
 void PrintBar(COORD& c, HANDLE h, int temp, STREET*& street_arr, int num, bool pay_rent, PLAYER*& player_arr);
 void Salary(PLAYER*& player_arr, int i, int salary);
 void PrintPlayer(COORD& c, HANDLE h, PLAYER*& player_arr, int i);
-void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c, PLAYER*& player_arr);
+void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c, PLAYER*& player_arr,
+	int count_players);
 void OtherVatiant(COORD& c, HANDLE h, int& code);
 void UCanBuy(COORD& c, HANDLE h);
 void ClearText(COORD& c, HANDLE h);
@@ -65,4 +66,6 @@ void LayHouse(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
 void PayRent(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
 void RlForProperty(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
 void CreateNewFile();
-void Save(STREET* street_arr, PLAYER* player_arr, int num, int count_players);
+void Save(STREET*& street_arr, PLAYER*& player_arr, int num, int count_players);
+void Loading(STREET*& street_arr, PLAYER*& player_arr, int num, int count_players);
+void SaveOrLoad(int code, STREET*& street_arr, PLAYER*& player_arr, int i, int count_players);

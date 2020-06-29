@@ -63,7 +63,7 @@ void ChoosePlayers(HANDLE h, int& count_players) {
 }
 
 PLAYER* PayersArr(int count_players) {
-	int first_money = 1025;
+	int first_money = 1000;
 	PLAYER* player_arr = new PLAYER[count_players];
 	for (int i = 0; i < count_players; i++) {
 		player_arr[i].rl = 0;
@@ -241,7 +241,7 @@ void PrintBar(COORD& c, HANDLE h, int temp, STREET*& street_arr, int num, bool p
 	else if (_strcmpi(street_arr[temp].master, temp_str) != 0 || 
 		_strcmpi(street_arr[temp].master, "Anyone has") == 0 ||
 		_strcmpi(street_arr[temp].master, "Anyone has") != 0 &&
-		street_arr[temp].property > 0 && player_arr[num].prison == true)
+		street_arr[temp].property > 0 || player_arr[num].prison == true)
 		SetConsoleTextAttribute(h, 1);
 	else
 		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
@@ -405,7 +405,12 @@ void RlMinus(PLAYER*& player_arr, int num) {
 	player_arr[num].rl--;
 }
 
-void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c, PLAYER*& player_arr) {
+void CreateNewFile() {
+	_mkdir("Saves");
+}
+
+void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c, PLAYER*& player_arr,
+	int count_players) {
 	bool pay_rent = false;
 	COORD mouse;
 	HANDLE h_m = GetStdHandle(STD_INPUT_HANDLE);
@@ -534,6 +539,10 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 					code = _getch();
 				if (code == 13)
 					break;
+				else if (code == 67)
+					Save(street_arr, player_arr, i, count_players);
+				else if (code == 68)
+					Loading(street_arr, player_arr, i, count_players);
 			}
 			delete[] str;
 			delete[] temp_str;
@@ -560,8 +569,7 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 	SetConsoleCursorPosition(h, c);
 	while (true) {
 		for (int i = 0; i < count_players; i++) {
-			CreateNewFile();
-			Save(street_arr, player_arr, i, count_players);
+			Salary(player_arr, i, salary);
 			PrintPlayer(c, h, player_arr, i);
 			first_stone = Stone(h, 11, 17); // first stone
 			second_stone = Stone(h, 13, 17); // seconsd stone
@@ -621,11 +629,11 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 			OtherVatiant(c, h, code);
 			if (code == 224 || code == 0)
 				code = _getch();
-			if (code != 13) {
+			if (code != 13 && code != 67 && code != 68) {
 				UCanBuy(c, h);
-				Choose(h, code, i, temp, street_arr, result, c, player_arr);
+				Choose(h, code, i, temp, street_arr, result, c, player_arr, count_players);
 			}
-			Salary(player_arr, i, salary);
+			//SaveOrLoad(code, street_arr, player_arr, i, count_players);
 			ClearField(h);
 			result = 0;
 			code = 0;
@@ -648,20 +656,14 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 	}
 }
 
-void CreateNewFile() {
-	_mkdir("Saves");
-}
-
-void Save(STREET* street_arr, PLAYER* player_arr, int num, int count_players) {
+void Save(STREET*& street_arr, PLAYER*& player_arr, int num, int count_players) {
 	int all_street = 12;
 	FILE* fl;
-	RENT rent;
-	fopen_s(&fl, "Saves\\save.txt", "w");
+	fopen_s(&fl, "Saves\\save.txt", "wb");
 	fwrite(&num, sizeof(int), 1, fl);
 	fwrite(&count_players, sizeof(int), 1, fl);
 	for (int i = 0; i < count_players; i++)
 		fwrite(&player_arr[i], sizeof(PLAYER), 1, fl);
-	fwrite(&rent, sizeof(RENT), 1, fl);
 	for (int i = 0; i < all_street; i++) {
 		fwrite(&street_arr[i].box, sizeof(int), 1, fl);
 		fwrite(&street_arr[i].property, sizeof(int), 1, fl);
@@ -680,4 +682,47 @@ void Save(STREET* street_arr, PLAYER* player_arr, int num, int count_players) {
 		for (int j = 0; j < 49; j++)
 			fwrite(&street_arr[i].master[j], sizeof(char), 1, fl);
 	}
+	fclose(fl);
+	system("cls");
+	cout << "Complete Loading";
+	Sleep(INFINITE);
+}
+
+void Loading(STREET*& street_arr, PLAYER*& player_arr, int num, int count_players) {
+	int all_street = 12;
+	FILE* fl;
+	fopen_s(&fl, "Saves\\save.txt", "rb");
+	fread(&num, sizeof(int), 1, fl);
+	fread(&count_players, sizeof(int), 1, fl);
+	for (int i = 0; i < count_players; i++)
+		fread(&player_arr[i], sizeof(PLAYER), 1, fl);
+	for (int i = 0; i < all_street; i++) {
+		fread(&street_arr[i].box, sizeof(int), 1, fl);
+		fread(&street_arr[i].property, sizeof(int), 1, fl);
+		fread(&street_arr[i].colour, sizeof(int), 1, fl);
+		fread(&street_arr[i].price, sizeof(int), 1, fl);
+		if (street_arr[i].colour != (int)COLOURS::WHITE) {
+			for (int j = 0; j < 6; j++)
+				fread(&street_arr[i].rent[j], sizeof(int), 1, fl);
+		}
+		else {
+			for (int j = 0; j < 4; j++)
+				fread(&street_arr[j].rent[j], sizeof(int), 1, fl);
+		}
+		for (int j = 0; j < 49; j++)
+			fread(&street_arr[i].call[j], sizeof(char), 1, fl);
+		for (int j = 0; j < 49; j++)
+			fread(&street_arr[i].master[j], sizeof(char), 1, fl);
+	}
+	fclose(fl);
+	system("cls");
+	cout << "Complete Reading";
+	Sleep(INFINITE);
+}
+
+void SaveOrLoad(int code, STREET*& street_arr, PLAYER*& player_arr, int i, int count_players) {
+	if (code == 67)
+		Save(street_arr, player_arr, i, count_players);
+	else if (code == 68)
+		Loading(street_arr, player_arr, i, count_players);
 }

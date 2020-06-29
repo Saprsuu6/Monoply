@@ -1,6 +1,7 @@
 #include"Header.h"
 
 int main() {
+	CreateNewFile();
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 	int count_players = 0;
 	STREET street{};
