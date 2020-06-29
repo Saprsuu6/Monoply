@@ -557,10 +557,11 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 	int for_prison = 0;
 	int counter_for_escape_from_prison = 0;
 	COORD c{ 28,2 };
+	SetConsoleCursorPosition(h, c);
 	while (true) {
 		for (int i = 0; i < count_players; i++) {
-			/*CreateNewFile();
-			Save(street_arr, player_arr, i, count_players);*/
+			CreateNewFile();
+			Save(street_arr, player_arr, i, count_players);
 			PrintPlayer(c, h, player_arr, i);
 			first_stone = Stone(h, 11, 17); // first stone
 			second_stone = Stone(h, 13, 17); // seconsd stone
@@ -654,8 +655,29 @@ void CreateNewFile() {
 void Save(STREET* street_arr, PLAYER* player_arr, int num, int count_players) {
 	int all_street = 12;
 	FILE* fl;
+	RENT rent;
 	fopen_s(&fl, "Saves\\save.txt", "w");
 	fwrite(&num, sizeof(int), 1, fl);
 	fwrite(&count_players, sizeof(int), 1, fl);
-	fwrite(player_arr, sizeof(player_arr), 1, fl);
+	for (int i = 0; i < count_players; i++)
+		fwrite(&player_arr[i], sizeof(PLAYER), 1, fl);
+	fwrite(&rent, sizeof(RENT), 1, fl);
+	for (int i = 0; i < all_street; i++) {
+		fwrite(&street_arr[i].box, sizeof(int), 1, fl);
+		fwrite(&street_arr[i].property, sizeof(int), 1, fl);
+		fwrite(&street_arr[i].colour, sizeof(int), 1, fl);
+		fwrite(&street_arr[i].price, sizeof(int), 1, fl);
+		if (street_arr[i].colour != (int)COLOURS::WHITE) {
+			for (int j = 0; j < 6; j++) 
+				fwrite(&street_arr[i].rent[j], sizeof(int), 1, fl);
+		}
+		else {
+			for (int j = 0; j < 4; j++)
+				fwrite(&street_arr[j].rent[j], sizeof(int), 1, fl);
+		}
+		for (int j = 0; j < 49; j++)
+			fwrite(&street_arr[i].call[j], sizeof(char), 1, fl);
+		for (int j = 0; j < 49; j++)
+			fwrite(&street_arr[i].master[j], sizeof(char), 1, fl);
+	}
 }
