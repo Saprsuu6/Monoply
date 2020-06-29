@@ -559,6 +559,8 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 	COORD c{ 28,2 };
 	while (true) {
 		for (int i = 0; i < count_players; i++) {
+			/*CreateNewFile();
+			Save(street_arr, player_arr, i, count_players);*/
 			PrintPlayer(c, h, player_arr, i);
 			first_stone = Stone(h, 11, 17); // first stone
 			second_stone = Stone(h, 13, 17); // seconsd stone
@@ -643,4 +645,17 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 				player_arr[i].prison = false;
 		}
 	}
+}
+
+void CreateNewFile() {
+	_mkdir("Saves");
+}
+
+void Save(STREET* street_arr, PLAYER* player_arr, int num, int count_players) {
+	int all_street = 12;
+	FILE* fl;
+	fopen_s(&fl, "Saves\\save.txt", "w");
+	fwrite(&num, sizeof(int), 1, fl);
+	fwrite(&count_players, sizeof(int), 1, fl);
+	fwrite(player_arr, sizeof(player_arr), 1, fl);
 }

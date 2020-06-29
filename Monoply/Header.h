@@ -2,6 +2,7 @@
 #include<windows.h>
 #include<ctime>
 #include<conio.h>
+#include<direct.h>
 using namespace std;
 
 enum class COLOURS { WHITE = 15, BROWN = 12, CYAN = 11, PINK = 13, ORANGE = 6, RED = 4, YELLOW = 14, GREEN = 10, BLUE = 9 };
@@ -50,7 +51,7 @@ void PrintStone(HANDLE h, int num, int x, int y);
 void GameEngine(HANDLE h, STREET& street, int count_players);
 void ShowProperty(HANDLE h, int colour, int price, int ar_rent[], const char* call, const char* master, int property);
 void ClearField(HANDLE h);
-void PrintBar(COORD& c, HANDLE h, int temp, STREET*& street_arr, int num, bool pay_rent);
+void PrintBar(COORD& c, HANDLE h, int temp, STREET*& street_arr, int num, bool pay_rent, PLAYER*& player_arr);
 void Salary(PLAYER*& player_arr, int i, int salary);
 void PrintPlayer(COORD& c, HANDLE h, PLAYER*& player_arr, int i);
 void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c, PLAYER*& player_arr);
@@ -63,3 +64,5 @@ void BuildHouse(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
 void LayHouse(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
 void PayRent(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
 void RlForProperty(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
+void CreateNewFile();
+void Save(STREET* street_arr, PLAYER* player_arr, int num, int count_players);
