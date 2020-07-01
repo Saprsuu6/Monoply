@@ -66,6 +66,6 @@ void LayHouse(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
 void PayRent(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
 void RlForProperty(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
 void CreateNewFile();
-void Save(STREET*& street_arr, PLAYER*& player_arr, int num, int count_players);
-void Loading(STREET*& street_arr, PLAYER*& player_arr, int num, int count_players);
+void Save(STREET*& street_arr, PLAYER*& player_arr, int count_players);
+void Loading(STREET*& street_arr, PLAYER*& player_arr, int count_players);
 void SaveOrLoad(int code, STREET*& street_arr, PLAYER*& player_arr, int i, int count_players);

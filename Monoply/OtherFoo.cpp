@@ -540,16 +540,18 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 				if (code == 13)
 					break;
 				else if (code == 67) {
-					Save(street_arr, player_arr, i, count_players);
+					Save(street_arr, player_arr, count_players);
 					break;
 				}
-				else if (code == 68)
-					Loading(street_arr, player_arr, i, count_players);
+				else if (code == 68) {
+					Loading(street_arr, player_arr, count_players);
+					break;
+				}
 			}
 			delete[] str;
 			delete[] temp_str;
 		}
-		if (code == 13 || code == 67)
+		if (code == 13 || code == 67 || code == 68)
 			break;
 	}
 }
@@ -658,12 +660,10 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 	}
 }
 
-void Save(STREET*& street_arr, PLAYER*& player_arr, int num, int count_players) {
+void Save(STREET*& street_arr, PLAYER*& player_arr, int count_players) {
 	int all_street = 12;
 	FILE* fl;
-	num--;
 	fopen_s(&fl, "Saves\\save.txt", "wb");
-	fwrite(&num, sizeof(int), 1, fl);
 	fwrite(&count_players, sizeof(int), 1, fl);
 	for (int i = 0; i < count_players; i++)
 		fwrite(&player_arr[i], sizeof(PLAYER), 1, fl);
@@ -686,16 +686,12 @@ void Save(STREET*& street_arr, PLAYER*& player_arr, int num, int count_players) 
 			fwrite(&street_arr[i].master[j], sizeof(char), 1, fl);
 	}
 	fclose(fl);
-	/*system("cls");
-	cout << "Complete Loading";
-	Sleep(INFINITE);*/
 }
 
-void Loading(STREET*& street_arr, PLAYER*& player_arr, int num, int count_players) {
+void Loading(STREET*& street_arr, PLAYER*& player_arr, int count_players) {
 	int all_street = 12;
 	FILE* fl;
 	fopen_s(&fl, "Saves\\save.txt", "rb");
-	fread(&num, sizeof(int), 1, fl);
 	fread(&count_players, sizeof(int), 1, fl);
 	for (int i = 0; i < count_players; i++)
 		fread(&player_arr[i], sizeof(PLAYER), 1, fl);
@@ -718,14 +714,11 @@ void Loading(STREET*& street_arr, PLAYER*& player_arr, int num, int count_player
 			fread(&street_arr[i].master[j], sizeof(char), 1, fl);
 	}
 	fclose(fl);
-	/*system("cls");
-	cout << "Complete Reading";
-	Sleep(INFINITE);*/
 }
 
 void SaveOrLoad(int code, STREET*& street_arr, PLAYER*& player_arr, int i, int count_players) {
 	if (code == 67)
-		Save(street_arr, player_arr, i, count_players);
+		Save(street_arr, player_arr, count_players);
 	else if (code == 68)
-		Loading(street_arr, player_arr, i, count_players);
+		Loading(street_arr, player_arr, count_players);
 }
