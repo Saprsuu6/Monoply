@@ -36,30 +36,37 @@ void CountOfPlayers(int& count, int& count_players) {
 }
 
 void ChoosePlayers(HANDLE h, int& count_players) {
-	cout << "Choose players, then bots. Use buttons " << char(24) << " or " << char(25) << ".\nCould be 7 players and 2 - minimum." << "\nAfter choose press ENTER." << endl;
-	COORD c{ 0,3 };
+	COORD c{ 0,0 };
 	bool temp = false;
 	int count = 0;
 	while (true) {
-		if (temp == true)
+		SetConsoleCursorPosition(h, c);
+		cout << "Choose players, then bots. Use buttons " << char(24) << " or " << char(25) << ".\nCould be 7 players and 2 - minimum." << "\nAfter choose press ENTER." << endl;
+		c.Y += 3;
+		SetConsoleCursorPosition(h, c);
+		while (true) {
+			if (temp == true)
+				break;
+			PrintCount(c, h, count, "Players");
+			Getch(count, temp, count_players);
+		}
+		CountOfPlayers(count, count_players);
+		c.Y++;
+		count = 0;
+		temp = false;
+		while (true) {
+			if (temp == true)
+				break;
+			PrintCount(c, h, count, "Bots");
+			Getch(count, temp, count_players);
+		}
+		CountOfPlayers(count, count_players);
+		system("cls");
+		c.X = 0, c.Y = 0;
+		temp = false;
+		if (count_players >= 2)
 			break;
-		PrintCount(c, h, count, "Players");
-		Getch(count, temp, count_players);
- 	}
-	CountOfPlayers(count, count_players);
-	c.Y++;
-	count = 0;
-	temp = false;
-	while (true) {
-		if (temp == true)
-			break;
-		PrintCount(c, h, count, "Bots");
-		Getch(count, temp, count_players);
 	}
-	CountOfPlayers(count, count_players);
-	if (count_players < 2)
-		main();
-	return;
 }
 
 PLAYER* PayersArr(int count_players) {
@@ -547,6 +554,8 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 					Loading(street_arr, player_arr, count_players);
 					break;
 				}
+				else if (code == 59)
+					Instruction(h);
 			}
 			delete[] str;
 			delete[] temp_str;
@@ -633,10 +642,12 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 			OtherVatiant(c, h, code);
 			if (code == 224 || code == 0)
 				code = _getch();
-			if (code != 13 && code != 67 && code != 68) {
+			if (code != 13 && code != 67 && code != 68 && code != 59) {
 				UCanBuy(c, h);
 				Choose(h, code, i, temp, street_arr, result, c, player_arr, count_players);
 			}
+			else if (code == 59)
+				Instruction(h);
 			SaveOrLoad(code, street_arr, player_arr, i, count_players);
 			ClearField(h);
 			result = 0;
@@ -721,4 +732,18 @@ void SaveOrLoad(int code, STREET*& street_arr, PLAYER*& player_arr, int i, int c
 		Save(street_arr, player_arr, count_players);
 	else if (code == 68)
 		Loading(street_arr, player_arr, count_players);
+}
+
+void Instruction(HANDLE h) {
+	COORD c{ 0,0 };
+	SetConsoleTextAttribute(h, (int)COLOURS::GREEN);
+	while (true){
+		SetConsoleCursorPosition(h, c);
+		cout << "For begin you may press ENTER to next player \nor ANY keys to make events.\
+ After your choose you \nmay also press ENTER to next player or ANY keys to contine your events.\
+ You may press F1 to read \ninstruction. You may press keys F9 to make a save \nor F10 to make a load.\n\n\
+ GAMEPLAY:\nFor begin all players can buy streets, what will\nhelp them go bunkrupt other players. Also players\n\
+can buy houses, lay it, lay streets. When player \ncome to someone else's street, player should \nto pay a rent.";
+		system("cls");
+	}
 }
