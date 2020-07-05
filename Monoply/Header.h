@@ -5,7 +5,8 @@
 #include<direct.h>
 using namespace std;
 
-enum class COLOURS { WHITE = 15, BROWN = 12, CYAN = 11, PINK = 13, ORANGE = 6, RED = 4, YELLOW = 14, GREEN = 10, BLUE = 9 };
+enum class COLOURS { WHITE = 15, BROWN = 12, CYAN = 11, PINK = 13, ORANGE = 6, RED = 4,
+	YELLOW = 14, GREEN = 10, BLUE = 9, DARKBLUE = 1 };
 
 struct STREET {
 	int box;
@@ -21,6 +22,7 @@ struct PLAYER {
 	int rl;
 	int money;
 	bool prison;
+	bool bankrupt;
 };
 
 struct RENT {
@@ -70,3 +72,5 @@ void Save(STREET*& street_arr, PLAYER*& player_arr, int count_players);
 void Loading(STREET*& street_arr, PLAYER*& player_arr, int count_players);
 void SaveOrLoad(int code, STREET*& street_arr, PLAYER*& player_arr, int i, int count_players);
 void Instruction(HANDLE h);
+void IfBancrupt(PLAYER*& player_arr, int num);
+void Knockout(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);

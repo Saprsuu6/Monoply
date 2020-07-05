@@ -76,6 +76,7 @@ PLAYER* PayersArr(int count_players) {
 		player_arr[i].rl = 0;
 		player_arr[i].money = first_money;
 		player_arr[i].prison = false;
+		player_arr[i].bankrupt = false;
 	}
 	return player_arr;
 }
@@ -213,7 +214,15 @@ void PrintPlayer(COORD& c, HANDLE h, PLAYER*& player_arr, int i) {
 	SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
 	SetConsoleCursorPosition(h, c);
 	cout << "Player #" << i + 1;
-	c.X = 28, c.Y += 2;
+	c.X = 28, c.Y++;
+	SetConsoleCursorPosition(h, c);
+	SetConsoleTextAttribute(h, (int)COLOURS::PINK);
+	if (player_arr[i].bankrupt == false)
+		cout << "Not bankrupt";
+	else
+		cout << "Bankrupt    ";
+	SetConsoleTextAttribute(h, (int)COLOURS::WHITE);
+	c.X = 28, c.Y++;
 	SetConsoleCursorPosition(h, c);
 	cout << "Money - " << player_arr[i].money << "$   ";
 	c.X = 28, c.Y++;
@@ -234,22 +243,24 @@ void PrintBar(COORD& c, HANDLE h, int temp, STREET*& street_arr, int num, bool p
 	c.Y += 5;
 	SetConsoleCursorPosition(h, c);
 	if (_strcmpi(street_arr[temp].master, "Anyone has") == 0 &&
-		player_arr[num].prison != true)
+		player_arr[num].prison != true && player_arr[num].bankrupt == false)
 		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
 	else
-		SetConsoleTextAttribute(h, 1);
+		SetConsoleTextAttribute(h, (int)COLOURS::DARKBLUE);
 	cout << "Buy";
 	c.X = 28, c.Y++;
 	SetConsoleCursorPosition(h, c);
 	if (_strcmpi(street_arr[temp].master, temp_str) == 0 && 
 		street_arr[temp].colour == (int)COLOURS::WHITE &&
-		street_arr[temp].property > 0 && player_arr[num].prison != true)
+		street_arr[temp].property > 0 && player_arr[num].prison != true && 
+		player_arr[num].bankrupt == false)
 		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
 	else if (_strcmpi(street_arr[temp].master, temp_str) != 0 || 
 		_strcmpi(street_arr[temp].master, "Anyone has") == 0 ||
 		_strcmpi(street_arr[temp].master, "Anyone has") != 0 &&
-		street_arr[temp].property > 0 || player_arr[num].prison == true)
-		SetConsoleTextAttribute(h, 1);
+		street_arr[temp].property > 0 || player_arr[num].prison == true && 
+		player_arr[num].bankrupt == true)
+		SetConsoleTextAttribute(h, (int)COLOURS::DARKBLUE);
 	else
 		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
 	cout << "Lay";
@@ -265,17 +276,19 @@ void PrintBar(COORD& c, HANDLE h, int temp, STREET*& street_arr, int num, bool p
 		c.X = 28, c.Y--;
 		SetConsoleCursorPosition(h, c);
 		if (_strcmpi(street_arr[temp].master, temp_str) == 0 && 
-			street_arr[temp].property > 0 && player_arr[num].prison != true)
+			street_arr[temp].property > 0 && player_arr[num].prison != true && 
+			player_arr[num].bankrupt == false)
 			SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
 		else
-			SetConsoleTextAttribute(h, 1);
+			SetConsoleTextAttribute(h, (int)COLOURS::DARKBLUE);
 		cout << "Lay house";
 		c.X = 28, c.Y++;
 		if (_strcmpi(street_arr[temp].master, temp_str) == 0 &&
-			street_arr[temp].property >= 0 && player_arr[num].prison != true)
+			street_arr[temp].property >= 0 && player_arr[num].prison != true && 
+			player_arr[num].bankrupt == false)
 			SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
 		else
-			SetConsoleTextAttribute(h, 1);
+			SetConsoleTextAttribute(h, (int)COLOURS::DARKBLUE);
 		SetConsoleCursorPosition(h, c);
 		cout << "Build house";
 	}
@@ -283,11 +296,19 @@ void PrintBar(COORD& c, HANDLE h, int temp, STREET*& street_arr, int num, bool p
 	SetConsoleCursorPosition(h, c);
 	if (_strcmpi(street_arr[temp].master, "Anyone has") != 0 &&
 		_strcmpi(street_arr[temp].master, temp_str) != 0 &&
-		pay_rent == false && player_arr[num].prison != true)
+		pay_rent == false && player_arr[num].prison != true && 
+		player_arr[num].bankrupt == false)
 		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
 	else
-		SetConsoleTextAttribute(h, 1);
+		SetConsoleTextAttribute(h, (int)COLOURS::DARKBLUE);
 	cout << "Pay Rent";
+	c.X = 28, c.Y++;
+	SetConsoleCursorPosition(h, c);
+	if (player_arr[num].bankrupt != true)
+		SetConsoleTextAttribute(h, (int)COLOURS::CYAN);
+	else
+		SetConsoleTextAttribute(h, (int)COLOURS::DARKBLUE);
+	cout << "Bankrupt!!!";
 	c.X = 28, c.Y = 2;
 	delete[] str;
 	delete[] temp_str;
@@ -416,6 +437,25 @@ void CreateNewFile() {
 	_mkdir("Saves");
 }
 
+void IfBancrupt(PLAYER*& player_arr, int num) {
+	player_arr[num].rl = 0;
+	player_arr[num].prison = false;
+	player_arr[num].money = 0;
+}
+
+void Knockout(int temp, STREET*& street_arr, PLAYER*& player_arr, int num) {
+	char* str = new char[5];
+	char* temp_str = new char[20];
+	_itoa_s(num + 1, str, 5, 10);
+	strcpy_s(temp_str, 19, "Player #");
+	strcat_s(temp_str, 19, str);
+	street_arr[temp].box = 0;
+	strcpy_s(street_arr[temp].master, 19, "Anyone has");
+	street_arr[temp].property = 0;
+	delete[] str;
+	delete[] temp_str;
+}
+
 void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int result, COORD& c, PLAYER*& player_arr,
 	int count_players) {
 	bool pay_rent = false;
@@ -436,7 +476,7 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 				_itoa_s(num + 1, str, 5, 10);
 				strcpy_s(temp_str, 19, "Player #");
 				strcat_s(temp_str, 19, str);
-				if (player_arr[num].prison == false) {
+				if (player_arr[num].prison == false && player_arr[num].bankrupt == false) {
 					if (mouse.X > 27 && mouse.X < 31 && mouse.Y == 7
 						&& _strcmpi(street_arr[temp].master, "Anyone has") == 0) {
 						strcpy_s(street_arr[temp].master, 49, "Player #");
@@ -485,8 +525,14 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 						pay_rent = true;
 					}
 				}
+				if (mouse.X > 27 && mouse.X < 39 && mouse.Y == 13 && player_arr[num].bankrupt == false)
+					player_arr[num].bankrupt = true;
 				if (_strcmpi(street_arr[temp].master, temp_str) == 0)
 					TakeFromBox(temp, street_arr, player_arr, num);
+				if (player_arr[num].bankrupt == true && _strcmpi(street_arr[temp].master, temp_str) == 0)
+					Knockout(temp, street_arr, player_arr, num);
+				if (player_arr[num].bankrupt == true) 
+					IfBancrupt(player_arr, num);
 				PrintPlayer(c, h, player_arr, num);
 				PrintBar(c, h, temp, street_arr, num, pay_rent, player_arr);
 				ClearField(h);
