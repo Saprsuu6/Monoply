@@ -333,7 +333,7 @@ void OtherVatiant(COORD& c, HANDLE h, int& code) {
 void UCanBuy(COORD& c, HANDLE h) {
 	c.X = 28, c.Y++;
 	SetConsoleCursorPosition(h, c);
-	cout << "You can buy!";
+	cout << "You can make events!";
 	Sleep(500);
 	ClearText(c, h);
 }
