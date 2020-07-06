@@ -74,3 +74,4 @@ void SaveOrLoad(int code, STREET*& street_arr, PLAYER*& player_arr, int i, int c
 void Instruction(HANDLE h);
 void IfBancrupt(PLAYER*& player_arr, int num);
 void Knockout(int temp, STREET*& street_arr, PLAYER*& player_arr, int num);
+int Events();

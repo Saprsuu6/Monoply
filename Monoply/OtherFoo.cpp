@@ -41,7 +41,8 @@ void ChoosePlayers(HANDLE h, int& count_players) {
 	int count = 0;
 	while (true) {
 		SetConsoleCursorPosition(h, c);
-		cout << "Choose players, then bots. Use buttons " << char(24) << " or " << char(25) << ".\nCould be 7 players and 2 - minimum." << "\nAfter choose press ENTER." << endl;
+		cout << "Choose players, then bots. Use buttons " << char(24) << " or " << char(25) << ".\nCould be\
+ 7 players and 2 - minimum." << "\nAfter choose press ENTER.\n" << endl;
 		c.Y += 3;
 		SetConsoleCursorPosition(h, c);
 		while (true) {
@@ -525,7 +526,8 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 						pay_rent = true;
 					}
 				}
-				if (mouse.X > 27 && mouse.X < 39 && mouse.Y == 13 && player_arr[num].bankrupt == false)
+				if ((mouse.X > 27 && mouse.X < 39 && mouse.Y == 13 || player_arr[num].money < 0) &&
+					player_arr[num].bankrupt == false)
 					player_arr[num].bankrupt = true;
 				if (_strcmpi(street_arr[temp].master, temp_str) == 0)
 					TakeFromBox(temp, street_arr, player_arr, num);
@@ -628,7 +630,8 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 	SetConsoleCursorPosition(h, c);
 	while (true) {
 		for (int i = 0; i < count_players; i++) {
-			Salary(player_arr, i, salary);
+			if (player_arr[i].bankrupt == false)
+				Salary(player_arr, i, salary);
 			PrintPlayer(c, h, player_arr, i);
 			first_stone = Stone(h, 11, 17); // first stone
 			second_stone = Stone(h, 13, 17); // seconsd stone
@@ -784,12 +787,24 @@ void Instruction(HANDLE h) {
 	COORD c{ 0,0 };
 	SetConsoleTextAttribute(h, (int)COLOURS::GREEN);
 	while (true){
+		system("cls");
 		SetConsoleCursorPosition(h, c);
 		cout << "For begin you may press ENTER to next player \nor ANY keys to make events.\
  After your choose you \nmay also press ENTER to next player or ANY keys to contine your events.\
  You may press F1 to read \ninstruction. You may press keys F9 to make a save \nor F10 to make a load.\n\n\
  GAMEPLAY:\nFor begin all players can buy streets, what will\nhelp them go bunkrupt other players. Also players\n\
-can buy houses, lay it, lay streets. When player \ncome to someone else's street, player should \nto pay a rent.";
-		system("cls");
+can buy houses, lay it, lay streets. When player \ncome to someone else's street, player should \nto pay a rent.\n\n\
+You should remember, if you will have money\nfew then 0, you will became bancrupt!\n\n\n\nPress ESC to return the game";
+		if (Events() == 27) {
+			system("cls");
+			break;
+		}
 	}
+}
+
+int Events() {
+	int code = _getch();
+	if (code == 224 || code == 0)
+		code = _getch();
+	return code;
 }
