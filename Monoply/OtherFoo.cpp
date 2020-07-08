@@ -602,8 +602,6 @@ void Choose(HANDLE h, int& code, int num, int temp, STREET*& street_arr, int res
 					Loading(street_arr, player_arr, count_players);
 					break;
 				}
-				else if (code == 59)
-					Instruction(h);
 			}
 			delete[] str;
 			delete[] temp_str;
@@ -695,8 +693,6 @@ void GameEngine(HANDLE h, STREET& street, int count_players) {
 				UCanBuy(c, h);
 				Choose(h, code, i, temp, street_arr, result, c, player_arr, count_players);
 			}
-			else if (code == 59)
-				Instruction(h);
 			SaveOrLoad(code, street_arr, player_arr, i, count_players);
 			ClearField(h);
 			result = 0;

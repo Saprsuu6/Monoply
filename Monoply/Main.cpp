@@ -9,6 +9,7 @@ int main() {
 	Setings(h);
 	ChoosePlayers(h, count_players);
 	system("cls");
+	Instruction(h);
 	GameField();
 	Sleep(300);
 	GameEngine(h, street, count_players);
